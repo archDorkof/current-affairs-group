@@ -221,6 +221,7 @@ const S = {
   loadingAction: null,
   headlines: [],
   headlineSel: {},
+  headlinesFallback: false,
   customTitle: '',
   customContext: '',
   customCat: 'international',
@@ -369,6 +370,7 @@ const VIEWS = {
         ${wizardSteps(2, ['Category', 'Headlines', 'Review'])}
         <h5 class="fw-bold text-navy mb-1">Recent Headlines</h5>
         <p class="text-muted small mb-3">Tick the stories you want talking points for.</p>
+        ${S.headlinesFallback ? `<div class="api-notice mb-3">Fewer than 3 recent articles found — showing the most recent available across all sources.</div>` : ''}
 
         ${S.headlines.length === 0
           ? `<div class="err-box mb-3">No articles found from the past 3 days. Try again later.</div>`
@@ -618,30 +620,42 @@ Rules: substantive topics, different angles in talking points, Australian spelli
 
 // ── Recent News ────────────────────────────────────────
 const RSS_FEEDS = [
-  { url: 'https://feeds.bbci.co.uk/news/world/rss.xml',       source: 'BBC' },
-  { url: 'https://www.abc.net.au/news/feed/2942460/rss.xml',  source: 'ABC' },
-  { url: 'https://rss.cnn.com/rss/edition.rss',               source: 'CNN' },
+  { url: 'https://feeds.bbci.co.uk/news/world/rss.xml',      source: 'BBC' },
+  { url: 'https://www.abc.net.au/news/feed/2942460/rss.xml', source: 'ABC' },
+  { url: 'https://www.smh.com.au/rss/feed.xml',              source: 'SMH' },
+  { url: 'https://rss.cnn.com/rss/edition.rss',              source: 'CNN' },
 ];
 
 async function goRecentNews() {
   S.error = null;
   S.headlines = [];
   S.headlineSel = {};
+  S.headlinesFallback = false;
   S.category = 'recent';
   go('fetchingNews');
 
   try {
     const results = await Promise.allSettled(RSS_FEEDS.map(f => fetchFeed(f.url, f.source)));
+    const succeeded = results.filter(r => r.status === 'fulfilled').map(r => r.value);
+
+    if (succeeded.length === 0) throw new Error('All news feeds failed. Check your internet connection.');
+
+    const all = succeeded
+      .flat()
+      .filter(h => h.title)
+      .sort((a, b) => b.ts - a.ts);
+
     const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
+    const recent = all.filter(h => h.ts >= threeDaysAgo);
 
-    const all = results
-      .filter(r => r.status === 'fulfilled')
-      .flatMap(r => r.value)
-      .filter(h => h.title && h.ts >= threeDaysAgo)
-      .sort((a, b) => b.ts - a.ts)
-      .slice(0, 18);
+    if (recent.length >= 3) {
+      S.headlines = recent.slice(0, 18);
+    } else {
+      // Fall back to most recent articles regardless of date
+      S.headlines = all.slice(0, 18);
+      S.headlinesFallback = true;
+    }
 
-    S.headlines = all;
     go('headlines');
   } catch(e) {
     S.error = `Could not fetch news: ${e.message}`;
@@ -650,23 +664,51 @@ async function goRecentNews() {
 }
 
 async function fetchFeed(url, source) {
-  const res  = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-  if (!res.ok) throw new Error(`${source}: ${res.status}`);
-  const data = await res.json();
-  const xml  = new DOMParser().parseFromString(data.contents, 'text/xml');
+  // Try two CORS proxies in sequence
+  const proxies = [
+    async u => {
+      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(u)}`);
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    },
+    async u => {
+      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`);
+      if (!r.ok) throw new Error(r.status);
+      return (await r.json()).contents;
+    },
+  ];
+
+  let xmlText = null;
+  for (const proxy of proxies) {
+    try {
+      const text = await proxy(url);
+      if (text && (text.includes('<item>') || text.includes('<item '))) {
+        xmlText = text; break;
+      }
+    } catch(e) { /* try next proxy */ }
+  }
+
+  if (!xmlText) throw new Error(`${source}: feed unavailable`);
+
+  const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
 
   return Array.from(xml.querySelectorAll('item')).map(item => {
-    const pubDate = new Date(item.querySelector('pubDate')?.textContent || '');
+    const rawDate = item.querySelector('pubDate')?.textContent?.trim() || '';
+    const pubDate = rawDate ? new Date(rawDate) : null;
+    const ts      = pubDate && !isNaN(pubDate) ? pubDate.getTime() : (Date.now() - 86400000);
+    const dateStr = pubDate && !isNaN(pubDate)
+      ? pubDate.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })
+      : '';
     const rawDesc = item.querySelector('description')?.textContent || '';
-    const desc    = rawDesc.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').slice(0, 180).trim();
+    const desc    = rawDesc.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim().slice(0, 180);
     return {
-      title:  item.querySelector('title')?.textContent?.trim() || '',
-      date:   isNaN(pubDate) ? '' : pubDate.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' }),
-      ts:     isNaN(pubDate) ? 0 : pubDate.getTime(),
+      title: item.querySelector('title')?.textContent?.trim() || '',
+      date:  dateStr,
+      ts,
       desc,
       source,
     };
-  });
+  }).filter(h => h.title);
 }
 
 function toggleHeadline(idx)    { S.headlineSel[idx] = !S.headlineSel[idx]; render(); }

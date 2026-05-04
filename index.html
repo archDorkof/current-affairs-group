@@ -162,8 +162,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>
 
 // ── Categories ────────────────────────────────────────
@@ -982,33 +980,12 @@ function saveSettings() {
 }
 
 // ── Export to Word ─────────────────────────────────────
-async function exportToWord() {
-  if (typeof docx === 'undefined') {
-    alert('Word export library not loaded. Check your internet connection and refresh.');
-    return;
-  }
-
-  const { Document, Paragraph, TextRun, AlignmentType, Packer, BorderStyle, UnderlineType } = docx;
-  const T = n => n * 20;
-
+function exportToWord() {
   const dateStr = new Date().toLocaleDateString('en-AU', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   });
 
-  const children = [];
-
-  children.push(new Paragraph({
-    alignment: AlignmentType.CENTER, spacing: { after: T(4) },
-    children: [new TextRun({ text: 'Current Affairs Group', bold: true, size: T(22), color: '1e3a5f' })],
-  }));
-  children.push(new Paragraph({
-    alignment: AlignmentType.CENTER, spacing: { after: T(14) },
-    children: [new TextRun({ text: dateStr, size: T(11), color: '718096' })],
-  }));
-  children.push(new Paragraph({
-    spacing: { after: T(14) },
-    border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '2b6cb0', space: 4 } },
-  }));
+  let body = '';
 
   const catOrder = [...CATS.map(c => c.id), 'custom'];
   catOrder.forEach(catId => {
@@ -1016,69 +993,65 @@ async function exportToWord() {
     if (topics.length === 0) return;
 
     const cat = CATS.find(c => c.id === catId) || { label: 'Custom', icon: '✍️' };
-
-    children.push(new Paragraph({
-      spacing: { before: T(16), after: T(6) },
-      children: [new TextRun({ text: cat.label, bold: true, size: T(16), color: '1e3a5f' })],
-    }));
-    children.push(new Paragraph({
-      spacing: { after: T(10) },
-      border: { bottom: { style: BorderStyle.SINGLE, size: 2, color: 'e2e8f0', space: 2 } },
-    }));
+    body += `<h2 class="cat-head">${escHtml(cat.label)}</h2>`;
 
     topics.forEach((t, i) => {
-      if (i > 0) {
-        children.push(new Paragraph({
-          spacing: { before: T(10), after: 0 },
-          border: { bottom: { style: BorderStyle.DASHED, size: 1, color: 'e2e8f0', space: 2 } },
-        }));
-      }
-
-      children.push(new Paragraph({
-        spacing: { before: T(10), after: T(4) },
-        children: [new TextRun({ text: t.title, bold: true, size: T(13) })],
-      }));
-
-      if (t.description) {
-        children.push(new Paragraph({
-          spacing: { after: T(8) },
-          children: [new TextRun({ text: t.description, size: T(11), italics: true, color: '4a5568' })],
-        }));
-      }
-
-      children.push(new Paragraph({
-        spacing: { after: T(4) },
-        children: [new TextRun({ text: 'Talking Points', bold: true, size: T(11), underline: { type: UnderlineType.SINGLE } })],
-      }));
-
-      (t.talkingPoints || []).forEach((p, pi) => {
-        children.push(new Paragraph({
-          spacing: { after: T(5) },
-          indent: { left: T(14) },
-          children: [
-            new TextRun({ text: `${pi + 1}.  `, bold: true, size: T(11) }),
-            new TextRun({ text: p, size: T(11) }),
-          ],
-        }));
-      });
+      if (i > 0) body += '<hr class="topic-rule">';
+      body += `<h3 class="topic-title">${escHtml(t.title)}</h3>`;
+      if (t.description) body += `<p class="topic-desc">${escHtml(t.description)}</p>`;
+      body += '<p class="tp-label">Talking Points</p><ol>';
+      (t.talkingPoints || []).forEach(p => { body += `<li>${escHtml(p)}</li>`; });
+      body += '</ol>';
     });
   });
 
-  children.push(new Paragraph({ spacing: { before: T(18) } }));
-  children.push(new Paragraph({
-    alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text: `Generated ${new Date().toLocaleDateString('en-AU')}`, size: T(9), color: 'aaaaaa' })],
-  }));
+  const html = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Current Affairs Group</title>
+<style>
+  body        { font-family: Calibri, sans-serif; font-size: 11pt; margin: 2cm; }
+  h1          { font-size: 20pt; color: #1e3a5f; text-align: center; margin-bottom: 4pt; }
+  .date       { text-align: center; color: #718096; font-size: 10pt; margin-top: 0; }
+  .rule       { border: none; border-top: 3pt solid #2b6cb0; margin: 12pt 0 18pt; }
+  .cat-head   { font-size: 14pt; font-weight: bold; color: #1e3a5f; margin-top: 20pt; margin-bottom: 4pt; border-bottom: 1pt solid #e2e8f0; padding-bottom: 4pt; }
+  .topic-title{ font-size: 12pt; font-weight: bold; color: #1e3a5f; margin: 12pt 0 4pt; }
+  .topic-desc { font-style: italic; color: #4a5568; margin: 0 0 8pt; }
+  .tp-label   { font-weight: bold; text-decoration: underline; margin: 8pt 0 4pt; }
+  ol          { margin: 0 0 8pt; padding-left: 18pt; }
+  li          { margin-bottom: 4pt; }
+  .topic-rule { border: none; border-top: 1pt dashed #e2e8f0; margin: 12pt 0; }
+  .footer     { text-align: center; color: #aaaaaa; font-size: 8pt; margin-top: 24pt; }
+</style>
+</head>
+<body>
+<h1>Current Affairs Group</h1>
+<p class="date">${escHtml(dateStr)}</p>
+<hr class="rule">
+${body}
+<p class="footer">Generated ${new Date().toLocaleDateString('en-AU')}</p>
+</body>
+</html>`;
 
-  const doc = new Document({
-    sections: [{
-      properties: { page: { margin: { top: 720, bottom: 720, left: 900, right: 900 } } },
-      children,
-    }],
-  });
+  const blob = new Blob(['﻿' + html], { type: 'application/msword' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `Current_Affairs_Group_${new Date().toISOString().slice(0,10)}.doc`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
-  const blob = await Packer.toBlob(doc);
-  saveAs(blob, `Current_Affairs_Group_${new Date().toISOString().slice(0,10)}.docx`);
+function escHtml(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
 }
 
 // ── Util ──────────────────────────────────────────────

@@ -358,7 +358,7 @@ const VIEWS = {
       <div class="gen-screen fade-in">
         <div class="spinner-ring"></div>
         <h6 class="fw-semibold text-secondary">Fetching recent headlines...</h6>
-        <p class="text-muted small">BBC · ABC · CNN — past 3 days</p>
+        <p class="text-muted small">BBC · ABC · SMH · CNN — past 3 days</p>
       </div>`;
   },
 
@@ -636,23 +636,21 @@ async function goRecentNews() {
 
   try {
     const results = await Promise.allSettled(RSS_FEEDS.map(f => fetchFeed(f.url, f.source)));
-    const succeeded = results.filter(r => r.status === 'fulfilled').map(r => r.value);
-
-    if (succeeded.length === 0) throw new Error('All news feeds failed. Check your internet connection.');
-
-    const all = succeeded
-      .flat()
+    const all = results
+      .filter(r => r.status === 'fulfilled')
+      .flatMap(r => r.value)
       .filter(h => h.title)
       .sort((a, b) => b.ts - a.ts);
+
+    if (all.length === 0) throw new Error('No articles returned from any source. Try again in a moment.');
 
     const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
     const recent = all.filter(h => h.ts >= threeDaysAgo);
 
     if (recent.length >= 3) {
-      S.headlines = recent.slice(0, 18);
+      S.headlines = recent.slice(0, 20);
     } else {
-      // Fall back to most recent articles regardless of date
-      S.headlines = all.slice(0, 18);
+      S.headlines = all.slice(0, 20);
       S.headlinesFallback = true;
     }
 
@@ -664,45 +662,23 @@ async function goRecentNews() {
 }
 
 async function fetchFeed(url, source) {
-  // Try two CORS proxies in sequence
-  const proxies = [
-    async u => {
-      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(u)}`);
-      if (!r.ok) throw new Error(r.status);
-      return r.text();
-    },
-    async u => {
-      const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`);
-      if (!r.ok) throw new Error(r.status);
-      return (await r.json()).contents;
-    },
-  ];
+  // rss2json.com converts RSS to JSON and handles CORS
+  const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&count=20`;
+  const res = await fetch(apiUrl);
+  if (!res.ok) throw new Error(`${source}: ${res.status}`);
+  const data = await res.json();
+  if (data.status !== 'ok') throw new Error(`${source}: ${data.message || 'feed error'}`);
 
-  let xmlText = null;
-  for (const proxy of proxies) {
-    try {
-      const text = await proxy(url);
-      if (text && (text.includes('<item>') || text.includes('<item '))) {
-        xmlText = text; break;
-      }
-    } catch(e) { /* try next proxy */ }
-  }
-
-  if (!xmlText) throw new Error(`${source}: feed unavailable`);
-
-  const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
-
-  return Array.from(xml.querySelectorAll('item')).map(item => {
-    const rawDate = item.querySelector('pubDate')?.textContent?.trim() || '';
-    const pubDate = rawDate ? new Date(rawDate) : null;
-    const ts      = pubDate && !isNaN(pubDate) ? pubDate.getTime() : (Date.now() - 86400000);
+  return (data.items || []).map(item => {
+    const pubDate = item.pubDate ? new Date(item.pubDate) : null;
+    const ts      = pubDate && !isNaN(pubDate) ? pubDate.getTime() : Date.now();
     const dateStr = pubDate && !isNaN(pubDate)
       ? pubDate.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })
       : '';
-    const rawDesc = item.querySelector('description')?.textContent || '';
-    const desc    = rawDesc.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim().slice(0, 180);
+    const desc = (item.description || '')
+      .replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim().slice(0, 180);
     return {
-      title: item.querySelector('title')?.textContent?.trim() || '',
+      title: (item.title || '').trim(),
       date:  dateStr,
       ts,
       desc,

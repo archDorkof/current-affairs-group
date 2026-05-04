@@ -11,102 +11,82 @@
     body { background: #f0f4f8; font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 
     .app-header {
-      background: var(--navy);
-      color: white;
+      background: var(--navy); color: white;
       padding: 0.85rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     .app-header h1 { font-size: 1.15rem; font-weight: 700; margin: 0; }
     .app-header .sub { font-size: 0.72rem; opacity: 0.55; }
 
-    /* Steps */
-    .wizard-steps {
-      display: flex; gap: 0; margin-bottom: 1.75rem;
-      border-radius: 8px; overflow: hidden;
-      border: 1px solid #e2e8f0;
-      background: white;
-    }
+    /* Wizard steps */
+    .wizard-steps { display: flex; gap: 0; margin-bottom: 1.75rem; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; background: white; }
     .ws { flex: 1; text-align: center; padding: 0.6rem 0.4rem; font-size: 0.75rem; color: #a0aec0; border-right: 1px solid #e2e8f0; }
     .ws:last-child { border-right: none; }
     .ws.active { background: var(--navy); color: white; font-weight: 600; }
     .ws.done { background: #ebf4ff; color: var(--blue); }
 
-    /* Welcome */
+    /* Hero / welcome */
     .hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
     .hero-icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
     .hero-title { font-size: 1.6rem; font-weight: 800; color: var(--navy); margin-bottom: 0.4rem; }
-    .saved-chip {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: #ebf4ff; color: var(--blue); border: none;
-      padding: 0.45rem 1.1rem; border-radius: 999px;
-      font-size: 0.875rem; font-weight: 600; cursor: pointer;
-    }
+    .saved-chip { display: inline-flex; align-items: center; gap: 0.4rem; background: #ebf4ff; color: var(--blue); border: none; padding: 0.45rem 1.1rem; border-radius: 999px; font-size: 0.875rem; font-weight: 600; cursor: pointer; }
     .saved-chip:hover { background: #dbeafe; }
-
-    /* API notice */
     .api-notice { background: #fffbeb; border: 1px solid #f6e05e; border-radius: 8px; padding: 0.9rem 1.1rem; font-size: 0.85rem; }
 
     /* Category cards */
     .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
-    .cat-card {
-      background: white; border-radius: 10px; padding: 1.4rem 1rem;
-      text-align: center; cursor: pointer;
-      border: 2px solid #e2e8f0;
-      transition: transform 0.1s, box-shadow 0.1s, border-color 0.1s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
+    .cat-card { background: white; border-radius: 10px; padding: 1.4rem 1rem; text-align: center; cursor: pointer; border: 2px solid #e2e8f0; transition: transform 0.1s, box-shadow 0.1s; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     .cat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
     .cat-card:active { transform: scale(0.97); }
     .cat-icon-big { font-size: 2.4rem; margin-bottom: 0.5rem; display: block; }
     .cat-name { font-weight: 700; font-size: 1rem; }
     .cat-sub  { font-size: 0.75rem; color: #718096; margin-top: 0.25rem; }
 
-    /* Count picker */
-    .count-ring {
-      width: 3.2rem; height: 3.2rem; border-radius: 50%;
-      border: 2px solid #e2e8f0; background: white;
-      font-size: 1.15rem; font-weight: 700; color: #4a5568;
-      cursor: pointer; transition: all 0.1s;
-    }
+    /* Count rings */
+    .count-ring { width: 3.2rem; height: 3.2rem; border-radius: 50%; border: 2px solid #e2e8f0; background: white; font-size: 1.15rem; font-weight: 700; color: #4a5568; cursor: pointer; transition: all 0.1s; }
     .count-ring:hover { border-color: var(--blue); color: var(--blue); }
     .count-ring.sel { background: var(--blue); border-color: var(--blue); color: white; }
 
-    /* Generating */
+    /* OR divider */
+    .or-divider { display: flex; align-items: center; gap: 0.75rem; color: #a0aec0; font-size: 0.8rem; margin: 1.25rem 0; }
+    .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+
+    /* Mode buttons (Recent News / Own Topic) */
+    .mode-btn { display: flex; align-items: center; gap: 0.85rem; background: white; border: 2px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.25rem; cursor: pointer; width: 100%; transition: border-color 0.15s, box-shadow 0.15s; text-align: left; margin-bottom: 0.65rem; }
+    .mode-btn:hover { border-color: var(--blue); box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+    .mode-btn:last-child { margin-bottom: 0; }
+    .mode-btn-icon { font-size: 1.75rem; flex-shrink: 0; }
+    .mode-btn-label { font-weight: 700; font-size: 0.95rem; color: var(--navy); }
+    .mode-btn-sub { font-size: 0.78rem; color: #718096; margin-top: 0.1rem; }
+
+    /* Spinner / generating */
     .gen-screen { min-height: 55vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-    .spinner-ring {
-      width: 56px; height: 56px;
-      border: 5px solid #e2e8f0; border-top-color: var(--blue);
-      border-radius: 50%; animation: spin 0.75s linear infinite; margin-bottom: 1.25rem;
-    }
+    .spinner-ring { width: 56px; height: 56px; border: 5px solid #e2e8f0; border-top-color: var(--blue); border-radius: 50%; animation: spin 0.75s linear infinite; margin-bottom: 1.25rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* Headline rows */
+    .headline-row { background: white; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 0.6rem; cursor: pointer; border: 2px solid #e2e8f0; transition: border-color 0.12s; display: flex; align-items: flex-start; gap: 0.75rem; }
+    .headline-row.sel { border-color: var(--blue); background: #f0f7ff; }
+    .headline-row:hover { border-color: #93c5fd; }
+    .hl-check { width: 1.2rem; height: 1.2rem; border-radius: 4px; border: 2px solid #cbd5e0; flex-shrink: 0; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; background: white; transition: all 0.12s; }
+    .hl-check.on { background: var(--blue); border-color: var(--blue); color: white; font-size: 0.7rem; }
+    .hl-title { font-weight: 600; font-size: 0.9rem; color: var(--navy); line-height: 1.4; }
+    .hl-meta { font-size: 0.75rem; color: #a0aec0; margin-top: 0.2rem; }
+    .hl-desc { font-size: 0.82rem; color: #4a5568; margin-top: 0.3rem; line-height: 1.5; }
+
+    /* Custom topic form */
+    .form-section { background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+
     /* Topic cards */
-    .topic-card {
-      background: white; border-radius: 10px;
-      margin-bottom: 1.1rem;
-      border-left: 4px solid #e2e8f0;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      overflow: hidden;
-      transition: border-left-color 0.2s;
-    }
+    .topic-card { background: white; border-radius: 10px; margin-bottom: 1.1rem; border-left: 4px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; transition: border-left-color 0.2s; }
     .topic-card.is-saved { border-left-color: #38a169; }
-    .topic-saved-strip {
-      background: #f0fff4; padding: 0.3rem 1.1rem;
-      font-size: 0.75rem; font-weight: 600; color: #276749;
-      border-bottom: 1px solid #c6f6d5;
-    }
+    .topic-saved-strip { background: #f0fff4; padding: 0.3rem 1.1rem; font-size: 0.75rem; font-weight: 600; color: #276749; border-bottom: 1px solid #c6f6d5; }
     .tc-head { padding: 0.9rem 1.1rem 0.7rem; border-bottom: 1px solid #f0f4f8; }
     .tc-body { padding: 0.9rem 1.1rem; }
     .topic-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin: 0; line-height: 1.4; }
-
-    .section-label {
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em;
-      text-transform: uppercase; color: #a0aec0; margin-bottom: 0.35rem;
-    }
+    .section-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #a0aec0; margin-bottom: 0.35rem; }
     .topic-desc { font-size: 0.875rem; color: #4a5568; line-height: 1.6; margin: 0; }
 
     /* Talking point rows */
@@ -122,30 +102,17 @@
     .act-link:hover { color: #1a4a8a; }
     .act-link:disabled { color: #a0aec0; cursor: default; }
 
-    /* Save toggle button */
-    .btn-save-toggle {
-      font-size: 0.8rem; font-weight: 600; border-radius: 999px;
-      padding: 0.3rem 0.9rem; border: 1.5px solid #e2e8f0;
-      background: white; color: #718096; cursor: pointer; transition: all 0.15s;
-    }
+    /* Save toggle */
+    .btn-save-toggle { font-size: 0.8rem; font-weight: 600; border-radius: 999px; padding: 0.3rem 0.9rem; border: 1.5px solid #e2e8f0; background: white; color: #718096; cursor: pointer; transition: all 0.15s; }
     .btn-save-toggle:hover { border-color: #38a169; color: #38a169; }
     .btn-save-toggle.on { background: #38a169; border-color: #38a169; color: white; }
 
-    /* Saved topics list */
-    .saved-row {
-      background: white; border-radius: 8px; padding: 0.9rem 1.1rem;
-      margin-bottom: 0.7rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .cat-pill {
-      display: inline-block; font-size: 0.68rem; font-weight: 700;
-      padding: 0.2rem 0.6rem; border-radius: 999px;
-      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem;
-    }
+    /* Saved list */
+    .saved-row { background: white; border-radius: 8px; padding: 0.9rem 1.1rem; margin-bottom: 0.7rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .cat-pill { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
 
-    /* Error */
+    /* Error / utils */
     .err-box { background: #fff5f5; border-left: 4px solid #e53e3e; padding: 0.9rem 1.1rem; border-radius: 6px; color: #c53030; font-size: 0.875rem; }
-
-    /* Utils */
     .card-box { background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
     .fade-in { animation: fi 0.18s ease; }
     @keyframes fi { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -206,24 +173,28 @@ const CATS = [
     color: '#1a56db', bg: '#ebf5fb',
     sub: 'Global news & world affairs',
     prompt: 'major international current affairs — global politics, international conflicts, climate agreements, world economic trends, and significant world events',
+    rss: 'https://feeds.bbci.co.uk/news/world/rss.xml',
   },
   {
     id: 'national', label: 'National', icon: '🇦🇺',
     color: '#057a55', bg: '#f0fff4',
     sub: 'Australian federal politics & news',
     prompt: 'Australian national current affairs — federal government policy, the Australian economy, national social issues, healthcare, and major Australian news events',
+    rss: 'https://www.abc.net.au/news/feed/2942460/rss.xml',
   },
   {
     id: 'nsw', label: 'NSW', icon: '🏛️',
     color: '#6c2bd9', bg: '#faf5ff',
     sub: 'NSW state government & issues',
     prompt: 'NSW state current affairs — NSW government policy, state budget and services, infrastructure projects, education, health, and significant NSW news',
+    rss: 'https://www.abc.net.au/news/feed/2921578/rss.xml',
   },
   {
     id: 'local', label: 'Local', icon: '📍',
     color: '#b45309', bg: '#fffbeb',
     sub: 'Mudgee & Central West NSW',
     prompt: 'local current affairs relevant to Mudgee and the Central West region of NSW — Mudgee Regional Council decisions, regional infrastructure and development, agriculture and wine industry, tourism, community issues, and events in the Mudgee, Orange, and Bathurst area',
+    rss: 'https://www.abc.net.au/news/feed/2942460/rss.xml',
   },
 ];
 
@@ -239,6 +210,12 @@ const S = {
   error: null,
   loadingIdx: null,
   loadingAction: null,
+  // Recent news
+  headlines: [],
+  headlineSel: {},
+  // Custom topic
+  customTitle: '',
+  customContext: '',
 };
 
 function loadSaved() {
@@ -260,10 +237,9 @@ function go(view) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── Wizard steps indicator ─────────────────────────────
+// ── Wizard steps ───────────────────────────────────────
 function wizardSteps(active) {
-  // active: 1=Category, 2=Count, 3=Review
-  const labels = ['Category', 'Count', 'Review'];
+  const labels = ['Category', 'Options', 'Review'];
   return `
     <div class="wizard-steps mb-4">
       ${labels.map((l, i) => {
@@ -271,6 +247,16 @@ function wizardSteps(active) {
         const cls = n === active ? 'active' : n < active ? 'done' : '';
         return `<div class="ws ${cls}">${n < active ? '✓ ' : ''}${l}</div>`;
       }).join('')}
+    </div>
+  `;
+}
+
+// ── Cat header helper ──────────────────────────────────
+function catHeader(cat) {
+  return `
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span style="font-size:1.6rem">${cat.icon}</span>
+      <h5 class="fw-bold text-navy mb-0">${cat.label}</h5>
     </div>
   `;
 }
@@ -314,7 +300,7 @@ const VIEWS = {
         <p class="text-muted small mb-4">What type of news would you like to discuss?</p>
         <div class="cat-grid mb-4">
           ${CATS.map(c => `
-            <div class="cat-card" onclick="selectCat('${c.id}')" style="border-color:#e2e8f0">
+            <div class="cat-card" onclick="selectCat('${c.id}')">
               <span class="cat-icon-big">${c.icon}</span>
               <div class="cat-name" style="color:${c.color}">${c.label}</div>
               <div class="cat-sub">${c.sub}</div>
@@ -331,22 +317,144 @@ const VIEWS = {
     return `
       <div class="fade-in">
         ${wizardSteps(2)}
-        <div class="d-flex align-items-center gap-2 mb-1">
-          <span style="font-size:1.6rem">${cat.icon}</span>
-          <h5 class="fw-bold text-navy mb-0">${cat.label}</h5>
+        ${catHeader(cat)}
+        <p class="text-muted small mb-4">Choose how to generate topics for this session.</p>
+
+        <!-- AI generate by count -->
+        <div class="card-box mb-3">
+          <div class="section-label mb-2">Generate by AI — how many topics?</div>
+          <div class="d-flex gap-3 flex-wrap mb-3">
+            ${[1,2,3,4,5].map(n => `
+              <button class="count-ring ${S.count === n ? 'sel' : ''}" onclick="setCount(${n})">${n}</button>
+            `).join('')}
+          </div>
+          <button class="btn btn-primary px-4" onclick="startGenerate()">Generate ${S.count} Topic${S.count !== 1 ? 's' : ''} →</button>
         </div>
-        <p class="text-muted small mb-4">How many topics would you like to generate?</p>
-        <div class="d-flex gap-3 flex-wrap mb-4">
-          ${[1,2,3,4,5].map(n => `
-            <button class="count-ring ${S.count === n ? 'sel' : ''}" onclick="setCount(${n})">${n}</button>
-          `).join('')}
-        </div>
-        <p class="text-muted small mb-4">
-          Will generate <strong>${S.count}</strong> ${cat.label.toLowerCase()} topic${S.count !== 1 ? 's' : ''}
-        </p>
-        <div class="d-flex gap-2">
+
+        <div class="or-divider">OR</div>
+
+        <!-- Alternative modes -->
+        <button class="mode-btn" onclick="goRecentNews()">
+          <span class="mode-btn-icon">📅</span>
+          <div>
+            <div class="mode-btn-label">From Recent News</div>
+            <div class="mode-btn-sub">Fetch headlines from the past 3 days and generate talking points</div>
+          </div>
+        </button>
+
+        <button class="mode-btn" onclick="go('customTopic')">
+          <span class="mode-btn-icon">✍️</span>
+          <div>
+            <div class="mode-btn-label">My Own Topic</div>
+            <div class="mode-btn-sub">Enter a topic yourself and let AI build the talking points</div>
+          </div>
+        </button>
+
+        <div class="mt-3">
           <button class="btn btn-outline-secondary btn-sm" onclick="go('category')">← Back</button>
-          <button class="btn btn-primary px-4" onclick="startGenerate()">Generate →</button>
+        </div>
+      </div>
+    `;
+  },
+
+  fetchingNews() {
+    const cat = CATS.find(c => c.id === S.category);
+    if (S.error) {
+      return `
+        <div class="gen-screen fade-in">
+          <div class="err-box mb-4 text-start" style="max-width:420px">${esc(S.error)}</div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" onclick="goRecentNews()">Try Again</button>
+            <button class="btn btn-outline-secondary" onclick="go('count')">← Back</button>
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="gen-screen fade-in">
+        <div class="spinner-ring"></div>
+        <h6 class="fw-semibold text-secondary">Fetching recent news...</h6>
+        <p class="text-muted small">${cat.icon} ${cat.label} headlines from the past 3 days</p>
+      </div>
+    `;
+  },
+
+  headlines() {
+    const cat = CATS.find(c => c.id === S.category);
+    const nSel = Object.values(S.headlineSel).filter(Boolean).length;
+    const allSel = S.headlines.length > 0 && nSel === S.headlines.length;
+
+    return `
+      <div class="fade-in">
+        ${wizardSteps(2)}
+        ${catHeader(cat)}
+        <p class="text-muted small mb-3">
+          Select the headlines you want talking points for.
+          ${S.headlines.length === 0 ? '' : `${S.headlines.length} recent article${S.headlines.length !== 1 ? 's' : ''} found.`}
+        </p>
+
+        ${S.headlines.length === 0 ? `
+          <div class="err-box mb-3">No articles found from the past 3 days for this category.</div>
+        ` : `
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="text-muted small">${nSel} selected</span>
+            <button class="act-link" onclick="selectAllHeadlines(${allSel ? 'false' : 'true'})">
+              ${allSel ? 'Deselect All' : 'Select All'}
+            </button>
+          </div>
+          ${S.headlines.map((h, i) => {
+            const sel = !!S.headlineSel[i];
+            return `
+              <div class="headline-row ${sel ? 'sel' : ''}" onclick="toggleHeadline(${i})">
+                <div class="hl-check ${sel ? 'on' : ''}">${sel ? '✓' : ''}</div>
+                <div>
+                  <div class="hl-title">${esc(h.title)}</div>
+                  <div class="hl-meta">${esc(h.date)}</div>
+                  ${h.desc ? `<div class="hl-desc">${esc(h.desc)}</div>` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        `}
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-secondary btn-sm" onclick="go('count')">← Back</button>
+          ${nSel > 0 ? `
+            <button class="btn btn-primary px-4" onclick="generateFromHeadlines()">
+              Generate Talking Points for ${nSel} headline${nSel !== 1 ? 's' : ''} →
+            </button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  },
+
+  customTopic() {
+    const cat = CATS.find(c => c.id === S.category);
+    return `
+      <div class="fade-in">
+        ${wizardSteps(2)}
+        ${catHeader(cat)}
+        <p class="text-muted small mb-4">Enter your topic and Claude will write the summary and talking points.</p>
+
+        <div class="form-section">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Topic Title <span class="text-danger">*</span></label>
+            <input type="text" id="customTitleInput" class="form-control"
+              placeholder="e.g. Proposed Bypass Road for Mudgee"
+              value="${esc(S.customTitle)}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Context <span class="text-muted fw-normal">(optional)</span></label>
+            <textarea id="customContextInput" class="form-control" rows="4"
+              placeholder="Paste a news excerpt, key facts, or describe what you know about the topic...">${esc(S.customContext)}</textarea>
+            <div class="form-text">Adding context gives Claude more to work with and produces better talking points.</div>
+          </div>
+          ${S.error ? `<div class="err-box mb-3">${esc(S.error)}</div>` : ''}
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" onclick="go('count')">← Back</button>
+            <button class="btn btn-primary px-4" onclick="generateCustomTopic()">Generate Talking Points →</button>
+          </div>
         </div>
       </div>
     `;
@@ -368,8 +476,8 @@ const VIEWS = {
     return `
       <div class="gen-screen fade-in">
         <div class="spinner-ring"></div>
-        <h6 class="fw-semibold text-secondary">Generating topics...</h6>
-        <p class="text-muted small">${cat.icon} ${S.count} ${cat.label} topic${S.count !== 1 ? 's' : ''}</p>
+        <h6 class="fw-semibold text-secondary">${esc(S.genMsg || 'Generating topics...')}</h6>
+        <p class="text-muted small">${cat.icon} ${cat.label}</p>
       </div>
     `;
   },
@@ -382,7 +490,7 @@ const VIEWS = {
         ${wizardSteps(3)}
         <div class="d-flex justify-content-between align-items-center mb-3">
           <span class="badge rounded-pill px-3 py-2" style="background:${cat.bg}; color:${cat.color}; font-size:0.82rem">
-            ${cat.icon} ${cat.label} &nbsp;·&nbsp; ${S.topics.length} topics
+            ${cat.icon} ${cat.label} &nbsp;·&nbsp; ${S.topics.length} topic${S.topics.length !== 1 ? 's' : ''}
           </span>
           <span class="text-muted small">${nSaved} marked to save</span>
         </div>
@@ -410,9 +518,7 @@ const VIEWS = {
           ${S.saved.length > 0 ? `${S.saved.length} total in your collection.` : ''}
         </p>
         <div class="d-flex flex-column align-items-center gap-3">
-          <button class="btn btn-primary btn-lg px-5" onclick="go('category')">
-            Generate More Topics
-          </button>
+          <button class="btn btn-primary btn-lg px-5" onclick="go('category')">Generate More Topics</button>
           ${S.saved.length > 0 ? `
             <button class="saved-chip" onclick="go('saved')">
               📋 ${S.saved.length} saved topics — View &amp; Export
@@ -455,14 +561,12 @@ const VIEWS = {
 
 // ── Card renderers ─────────────────────────────────────
 function topicCard(t, i) {
-  const busy     = S.loadingIdx === i;
-  const busySum  = busy && S.loadingAction === 'summary';
-  const busyAdd  = busy && S.loadingAction === 'addTP';
-
+  const busy    = S.loadingIdx === i;
+  const busySum = busy && S.loadingAction === 'summary';
+  const busyAdd = busy && S.loadingAction === 'addTP';
   return `
     <div class="topic-card ${t._saved ? 'is-saved' : ''}">
       ${t._saved ? `<div class="topic-saved-strip">✓ Saved</div>` : ''}
-
       <div class="tc-head">
         <div class="d-flex justify-content-between align-items-start gap-2">
           <p class="topic-title">${esc(t.title)}</p>
@@ -471,9 +575,7 @@ function topicCard(t, i) {
           </button>
         </div>
       </div>
-
       <div class="tc-body">
-        <!-- Summary -->
         <div class="mb-3">
           <div class="d-flex justify-content-between align-items-center mb-1">
             <div class="section-label">Summary</div>
@@ -483,8 +585,6 @@ function topicCard(t, i) {
           </div>
           <p class="topic-desc${busySum ? ' opacity-50' : ''}">${esc(t.description)}</p>
         </div>
-
-        <!-- Talking points -->
         <div>
           <div class="d-flex justify-content-between align-items-center mb-1">
             <div class="section-label">Talking Points</div>
@@ -497,7 +597,7 @@ function topicCard(t, i) {
             <div class="tp-row">
               <span class="tp-n">${pi + 1}.</span>
               <span class="tp-t">${esc(p)}</span>
-              <button class="tp-x" onclick="deleteTP(${i},${pi})" title="Delete this point">✕</button>
+              <button class="tp-x" onclick="deleteTP(${i},${pi})" title="Delete">✕</button>
             </div>
           `).join('')}
         </div>
@@ -507,7 +607,7 @@ function topicCard(t, i) {
 }
 
 function savedRow(t, i) {
-  const cat = CATS.find(c => c.id === t._category) || CATS[0];
+  const cat = CATS.find(c => c.id === t._category) || { label: 'Custom', icon: '✍️', bg: '#f7fafc', color: '#4a5568' };
   return `
     <div class="saved-row">
       <div class="d-flex justify-content-between align-items-start gap-2">
@@ -538,9 +638,10 @@ function setCount(n) {
   render();
 }
 
-// ── Generation ─────────────────────────────────────────
+// ── AI: Generate by count ──────────────────────────────
 async function startGenerate() {
   S.error = null;
+  S.genMsg = `Generating ${S.count} topic${S.count !== 1 ? 's' : ''}...`;
   go('generating');
 
   const cat = CATS.find(c => c.id === S.category);
@@ -575,7 +676,6 @@ Rules:
     const topics = await callClaude(prompt, true);
     topics.forEach(t => { t._saved = false; t._category = S.category; });
     S.topics = topics;
-    S.error = null;
     go('review');
   } catch(e) {
     S.error = `Could not generate topics: ${e.message}`;
@@ -583,7 +683,175 @@ Rules:
   }
 }
 
-// ── Topic actions ──────────────────────────────────────
+// ── Recent News: fetch RSS ─────────────────────────────
+async function goRecentNews() {
+  S.error = null;
+  S.headlines = [];
+  S.headlineSel = {};
+  go('fetchingNews');
+
+  const cat = CATS.find(c => c.id === S.category);
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(cat.rss)}`;
+
+  try {
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error(`Fetch error ${res.status}`);
+    const data = await res.json();
+
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(data.contents, 'text/xml');
+    const items = Array.from(xml.querySelectorAll('item'));
+
+    const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
+
+    S.headlines = items
+      .map(item => {
+        const pubDate = new Date(item.querySelector('pubDate')?.textContent || '');
+        const rawDesc = item.querySelector('description')?.textContent || '';
+        const desc = rawDesc.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').slice(0, 200).trim();
+        return {
+          title: item.querySelector('title')?.textContent?.trim() || '',
+          date:  isNaN(pubDate) ? '' : pubDate.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' }),
+          ts:    isNaN(pubDate) ? 0 : pubDate.getTime(),
+          desc,
+        };
+      })
+      .filter(h => h.title && h.ts >= threeDaysAgo)
+      .slice(0, 12);
+
+    if (S.headlines.length === 0) {
+      // Show the page anyway with the "no articles" message
+    }
+
+    go('headlines');
+  } catch(e) {
+    S.error = `Could not fetch news: ${e.message}. Check your internet connection.`;
+    render();
+  }
+}
+
+function toggleHeadline(idx) {
+  S.headlineSel[idx] = !S.headlineSel[idx];
+  render();
+}
+
+function selectAllHeadlines(val) {
+  S.headlines.forEach((_, i) => { S.headlineSel[i] = val; });
+  render();
+}
+
+async function generateFromHeadlines() {
+  const selected = S.headlines.filter((_, i) => S.headlineSel[i]);
+  if (selected.length === 0) return;
+
+  S.error = null;
+  S.genMsg = `Generating talking points for ${selected.length} headline${selected.length !== 1 ? 's' : ''}...`;
+  go('generating');
+
+  const cat = CATS.find(c => c.id === S.category);
+  const headlineList = selected.map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}`).join('\n');
+
+  const prompt = `You are generating structured current affairs discussion topics for an Australian group.
+
+Based on the following real news headlines, generate one discussion topic per headline.
+
+Headlines:
+${headlineList}
+
+Return ONLY a valid JSON array with one object per headline, in the same order:
+[
+  {
+    "title": "The headline or a clear restatement of it (max 12 words)",
+    "description": "2–3 sentences summarising the story, its significance, and context for an Australian audience.",
+    "talkingPoints": [
+      "First discussion question or angle",
+      "Second perspective or question",
+      "Third angle",
+      "Fourth discussion point"
+    ]
+  }
+]
+
+Rules:
+- Keep title faithful to the original headline
+- Talking points should encourage debate and different viewpoints
+- Australian spelling throughout
+- Return valid JSON only, no markdown fences`;
+
+  try {
+    const topics = await callClaude(prompt, true);
+    topics.forEach(t => { t._saved = false; t._category = S.category; });
+    S.topics = topics;
+    go('review');
+  } catch(e) {
+    S.error = `Could not generate talking points: ${e.message}`;
+    render();
+  }
+}
+
+// ── Custom topic ───────────────────────────────────────
+async function generateCustomTopic() {
+  const titleEl   = document.getElementById('customTitleInput');
+  const contextEl = document.getElementById('customContextInput');
+
+  const title   = titleEl?.value.trim() || '';
+  const context = contextEl?.value.trim() || '';
+
+  if (!title) {
+    S.customTitle   = title;
+    S.customContext = context;
+    S.error = 'Please enter a topic title.';
+    render();
+    return;
+  }
+
+  S.customTitle   = title;
+  S.customContext = context;
+  S.error = null;
+  S.genMsg = `Generating talking points for "${title}"...`;
+  go('generating');
+
+  const cat = CATS.find(c => c.id === S.category);
+
+  const prompt = `You are generating a structured current affairs discussion topic for an Australian group.
+
+Topic: ${title}
+${context ? `\nContext provided:\n${context}` : ''}
+Category: ${cat.label}
+
+Return ONLY a valid JSON array containing exactly one object:
+[
+  {
+    "title": "${title}",
+    "description": "2–3 sentences summarising the issue, its significance, and relevant context.",
+    "talkingPoints": [
+      "First discussion question or angle",
+      "Second perspective or question",
+      "Third angle",
+      "Fourth discussion point"
+    ]
+  }
+]
+
+Rules:
+- Use the exact title provided
+- Talking points should encourage debate and different viewpoints
+- Australian spelling throughout
+- Return valid JSON only, no markdown fences`;
+
+  try {
+    const topics = await callClaude(prompt, true);
+    topics.forEach(t => { t._saved = false; t._category = S.category; });
+    S.topics = topics;
+    go('review');
+  } catch(e) {
+    S.error = `Could not generate topic: ${e.message}`;
+    S.view = 'customTopic';
+    render();
+  }
+}
+
+// ── Topic review actions ───────────────────────────────
 function toggleSave(idx) {
   S.topics[idx]._saved = !S.topics[idx]._saved;
   render();
@@ -607,7 +875,7 @@ Current summary: ${t.description}`;
   try {
     const text = await callClaude(prompt, false);
     S.topics[idx].description = text.trim();
-  } catch(e) { /* keep original on failure */ }
+  } catch(e) { /* keep original */ }
   finally {
     S.loadingIdx = null;
     S.loadingAction = null;
@@ -632,7 +900,7 @@ Return only the new talking point (one sentence, no numbering), no other text.`;
   try {
     const text = await callClaude(prompt, false);
     S.topics[idx].talkingPoints.push(text.trim());
-  } catch(e) { /* keep original on failure */ }
+  } catch(e) { /* keep original */ }
   finally {
     S.loadingIdx = null;
     S.loadingAction = null;
@@ -692,7 +960,6 @@ async function callClaude(prompt, parseJson) {
 
   if (!parseJson) return text;
 
-  // Strip any markdown fences and extract the JSON array
   const match = text.match(/\[[\s\S]*\]/);
   if (!match) throw new Error('Unexpected response format. Please try again.');
   return JSON.parse(match[0]);
@@ -722,7 +989,7 @@ async function exportToWord() {
   }
 
   const { Document, Paragraph, TextRun, AlignmentType, Packer, BorderStyle, UnderlineType } = docx;
-  const T = n => n * 20; // pt to twip
+  const T = n => n * 20;
 
   const dateStr = new Date().toLocaleDateString('en-AU', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -731,13 +998,11 @@ async function exportToWord() {
   const children = [];
 
   children.push(new Paragraph({
-    alignment: AlignmentType.CENTER,
-    spacing: { after: T(4) },
+    alignment: AlignmentType.CENTER, spacing: { after: T(4) },
     children: [new TextRun({ text: 'Current Affairs Group', bold: true, size: T(22), color: '1e3a5f' })],
   }));
   children.push(new Paragraph({
-    alignment: AlignmentType.CENTER,
-    spacing: { after: T(14) },
+    alignment: AlignmentType.CENTER, spacing: { after: T(14) },
     children: [new TextRun({ text: dateStr, size: T(11), color: '718096' })],
   }));
   children.push(new Paragraph({
@@ -745,14 +1010,16 @@ async function exportToWord() {
     border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '2b6cb0', space: 4 } },
   }));
 
-  // Group by category in order
-  CATS.forEach(cat => {
-    const topics = S.saved.filter(t => t._category === cat.id);
+  const catOrder = [...CATS.map(c => c.id), 'custom'];
+  catOrder.forEach(catId => {
+    const topics = S.saved.filter(t => t._category === catId);
     if (topics.length === 0) return;
+
+    const cat = CATS.find(c => c.id === catId) || { label: 'Custom', icon: '✍️' };
 
     children.push(new Paragraph({
       spacing: { before: T(16), after: T(6) },
-      children: [new TextRun({ text: `${cat.label}`, bold: true, size: T(16), color: '1e3a5f' })],
+      children: [new TextRun({ text: cat.label, bold: true, size: T(16), color: '1e3a5f' })],
     }));
     children.push(new Paragraph({
       spacing: { after: T(10) },
@@ -781,11 +1048,7 @@ async function exportToWord() {
 
       children.push(new Paragraph({
         spacing: { after: T(4) },
-        children: [new TextRun({
-          text: 'Talking Points',
-          bold: true, size: T(11),
-          underline: { type: UnderlineType.SINGLE },
-        })],
+        children: [new TextRun({ text: 'Talking Points', bold: true, size: T(11), underline: { type: UnderlineType.SINGLE } })],
       }));
 
       (t.talkingPoints || []).forEach((p, pi) => {

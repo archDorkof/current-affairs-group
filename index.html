@@ -231,7 +231,7 @@ const CATS = [
 const S = {
   view: 'welcome',
   category: null,
-  count: 5,
+  count: 3,
   topics: [],
   saved: [],
   apiKey: localStorage.getItem('cag_key') || '',
@@ -337,7 +337,7 @@ const VIEWS = {
         </div>
         <p class="text-muted small mb-4">How many topics would you like to generate?</p>
         <div class="d-flex gap-3 flex-wrap mb-4">
-          ${[3,4,5,6,7,8].map(n => `
+          ${[1,2,3,4,5].map(n => `
             <button class="count-ring ${S.count === n ? 'sel' : ''}" onclick="setCount(${n})">${n}</button>
           `).join('')}
         </div>

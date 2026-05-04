@@ -17,17 +17,21 @@
       position: sticky; top: 0; z-index: 100;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    .app-header h1 { font-size: 1.15rem; font-weight: 700; margin: 0; }
+    .app-header h1 {
+      font-size: 1.15rem; font-weight: 700; margin: 0;
+      cursor: pointer; text-decoration: none; color: white;
+    }
+    .app-header h1:hover { opacity: 0.85; }
     .app-header .sub { font-size: 0.72rem; opacity: 0.55; }
 
     /* Wizard steps */
-    .wizard-steps { display: flex; gap: 0; margin-bottom: 1.75rem; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; background: white; }
+    .wizard-steps { display: flex; margin-bottom: 1.75rem; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; background: white; }
     .ws { flex: 1; text-align: center; padding: 0.6rem 0.4rem; font-size: 0.75rem; color: #a0aec0; border-right: 1px solid #e2e8f0; }
     .ws:last-child { border-right: none; }
     .ws.active { background: var(--navy); color: white; font-weight: 600; }
     .ws.done { background: #ebf4ff; color: var(--blue); }
 
-    /* Hero / welcome */
+    /* Hero */
     .hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
     .hero-icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
     .hero-title { font-size: 1.6rem; font-weight: 800; color: var(--navy); margin-bottom: 0.4rem; }
@@ -44,16 +48,11 @@
     .cat-name { font-weight: 700; font-size: 1rem; }
     .cat-sub  { font-size: 0.75rem; color: #718096; margin-top: 0.25rem; }
 
-    /* Count rings */
-    .count-ring { width: 3.2rem; height: 3.2rem; border-radius: 50%; border: 2px solid #e2e8f0; background: white; font-size: 1.15rem; font-weight: 700; color: #4a5568; cursor: pointer; transition: all 0.1s; }
-    .count-ring:hover { border-color: var(--blue); color: var(--blue); }
-    .count-ring.sel { background: var(--blue); border-color: var(--blue); color: white; }
-
     /* OR divider */
     .or-divider { display: flex; align-items: center; gap: 0.75rem; color: #a0aec0; font-size: 0.8rem; margin: 1.25rem 0; }
     .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
 
-    /* Mode buttons (Recent News / Own Topic) */
+    /* Mode buttons */
     .mode-btn { display: flex; align-items: center; gap: 0.85rem; background: white; border: 2px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.25rem; cursor: pointer; width: 100%; transition: border-color 0.15s, box-shadow 0.15s; text-align: left; margin-bottom: 0.65rem; }
     .mode-btn:hover { border-color: var(--blue); box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
     .mode-btn:last-child { margin-bottom: 0; }
@@ -61,7 +60,12 @@
     .mode-btn-label { font-weight: 700; font-size: 0.95rem; color: var(--navy); }
     .mode-btn-sub { font-size: 0.78rem; color: #718096; margin-top: 0.1rem; }
 
-    /* Spinner / generating */
+    /* Count rings */
+    .count-ring { width: 3.2rem; height: 3.2rem; border-radius: 50%; border: 2px solid #e2e8f0; background: white; font-size: 1.15rem; font-weight: 700; color: #4a5568; cursor: pointer; transition: all 0.1s; }
+    .count-ring:hover { border-color: var(--blue); color: var(--blue); }
+    .count-ring.sel { background: var(--blue); border-color: var(--blue); color: white; }
+
+    /* Spinner */
     .gen-screen { min-height: 55vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
     .spinner-ring { width: 56px; height: 56px; border: 5px solid #e2e8f0; border-top-color: var(--blue); border-radius: 50%; animation: spin 0.75s linear infinite; margin-bottom: 1.25rem; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -70,11 +74,12 @@
     .headline-row { background: white; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 0.6rem; cursor: pointer; border: 2px solid #e2e8f0; transition: border-color 0.12s; display: flex; align-items: flex-start; gap: 0.75rem; }
     .headline-row.sel { border-color: var(--blue); background: #f0f7ff; }
     .headline-row:hover { border-color: #93c5fd; }
-    .hl-check { width: 1.2rem; height: 1.2rem; border-radius: 4px; border: 2px solid #cbd5e0; flex-shrink: 0; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; background: white; transition: all 0.12s; }
-    .hl-check.on { background: var(--blue); border-color: var(--blue); color: white; font-size: 0.7rem; }
+    .hl-check { width: 1.2rem; height: 1.2rem; border-radius: 4px; border: 2px solid #cbd5e0; flex-shrink: 0; margin-top: 0.15rem; display: flex; align-items: center; justify-content: center; background: white; transition: all 0.12s; font-size: 0.7rem; }
+    .hl-check.on { background: var(--blue); border-color: var(--blue); color: white; }
     .hl-title { font-weight: 600; font-size: 0.9rem; color: var(--navy); line-height: 1.4; }
-    .hl-meta { font-size: 0.75rem; color: #a0aec0; margin-top: 0.2rem; }
+    .hl-meta { font-size: 0.72rem; color: #a0aec0; margin-top: 0.2rem; }
     .hl-desc { font-size: 0.82rem; color: #4a5568; margin-top: 0.3rem; line-height: 1.5; }
+    .source-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 999px; background: #e2e8f0; color: #4a5568; margin-right: 0.4rem; }
 
     /* Custom topic form */
     .form-section { background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
@@ -123,7 +128,7 @@
 
 <header class="app-header">
   <div>
-    <h1>Current Affairs Group</h1>
+    <h1 onclick="go('welcome')">Current Affairs Group</h1>
     <div class="sub">Talking Points Generator</div>
   </div>
   <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
@@ -171,30 +176,35 @@ const CATS = [
     color: '#1a56db', bg: '#ebf5fb',
     sub: 'Global news & world affairs',
     prompt: 'major international current affairs — global politics, international conflicts, climate agreements, world economic trends, and significant world events',
-    rss: 'https://feeds.bbci.co.uk/news/world/rss.xml',
   },
   {
     id: 'national', label: 'National', icon: '🇦🇺',
     color: '#057a55', bg: '#f0fff4',
     sub: 'Australian federal politics & news',
     prompt: 'Australian national current affairs — federal government policy, the Australian economy, national social issues, healthcare, and major Australian news events',
-    rss: 'https://www.abc.net.au/news/feed/2942460/rss.xml',
   },
   {
     id: 'nsw', label: 'NSW', icon: '🏛️',
     color: '#6c2bd9', bg: '#faf5ff',
     sub: 'NSW state government & issues',
     prompt: 'NSW state current affairs — NSW government policy, state budget and services, infrastructure projects, education, health, and significant NSW news',
-    rss: 'https://www.abc.net.au/news/feed/2921578/rss.xml',
   },
   {
     id: 'local', label: 'Local', icon: '📍',
     color: '#b45309', bg: '#fffbeb',
     sub: 'Mudgee & Central West NSW',
     prompt: 'local current affairs relevant to Mudgee and the Central West region of NSW — Mudgee Regional Council decisions, regional infrastructure and development, agriculture and wine industry, tourism, community issues, and events in the Mudgee, Orange, and Bathurst area',
-    rss: 'https://www.abc.net.au/news/feed/2942460/rss.xml',
   },
 ];
+
+const EXTRA_CATS = {
+  recent: { id: 'recent', label: 'Recent News',  icon: '📅', bg: '#ebf4ff', color: '#2b6cb0' },
+  custom: { id: 'custom', label: 'Custom Topic', icon: '✍️', bg: '#f7fafc', color: '#4a5568' },
+};
+
+function getCat(id) {
+  return CATS.find(c => c.id === id) || EXTRA_CATS[id] || EXTRA_CATS.custom;
+}
 
 // ── State ─────────────────────────────────────────────
 const S = {
@@ -206,14 +216,14 @@ const S = {
   apiKey: localStorage.getItem('cag_key') || '',
   model:  localStorage.getItem('cag_model') || 'claude-haiku-4-5-20251001',
   error: null,
+  genMsg: '',
   loadingIdx: null,
   loadingAction: null,
-  // Recent news
   headlines: [],
   headlineSel: {},
-  // Custom topic
   customTitle: '',
   customContext: '',
+  customCat: 'international',
 };
 
 function loadSaved() {
@@ -227,17 +237,15 @@ function persistSaved() {
 function render() {
   document.getElementById('app').innerHTML = VIEWS[S.view]();
 }
-
 function go(view) {
-  S.view = view;
-  S.error = null;
+  S.view = view; S.error = null;
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ── Wizard steps ───────────────────────────────────────
-function wizardSteps(active) {
-  const labels = ['Category', 'Options', 'Review'];
+function wizardSteps(active, labels) {
+  labels = labels || ['Category', 'Count', 'Review'];
   return `
     <div class="wizard-steps mb-4">
       ${labels.map((l, i) => {
@@ -245,18 +253,7 @@ function wizardSteps(active) {
         const cls = n === active ? 'active' : n < active ? 'done' : '';
         return `<div class="ws ${cls}">${n < active ? '✓ ' : ''}${l}</div>`;
       }).join('')}
-    </div>
-  `;
-}
-
-// ── Cat header helper ──────────────────────────────────
-function catHeader(cat) {
-  return `
-    <div class="d-flex align-items-center gap-2 mb-1">
-      <span style="font-size:1.6rem">${cat.icon}</span>
-      <h5 class="fw-bold text-navy mb-0">${cat.label}</h5>
-    </div>
-  `;
+    </div>`;
 }
 
 // ── Views ─────────────────────────────────────────────
@@ -268,26 +265,17 @@ const VIEWS = {
       <div class="hero fade-in">
         <div class="hero-icon">📰</div>
         <h2 class="hero-title">Current Affairs Generator</h2>
-        <p class="text-muted mb-4" style="font-size:0.95rem">
-          Generate discussion topics &amp; talking points for your group meeting.
-        </p>
-        ${!hasKey ? `
-          <div class="api-notice mb-4 text-start">
-            <strong>API Key Required</strong> — click <strong>⚙ Settings</strong> (top right) to add your Anthropic API key.
-          </div>
-        ` : ''}
+        <p class="text-muted mb-4" style="font-size:0.95rem">Generate discussion topics &amp; talking points for your group meeting.</p>
+        ${!hasKey ? `<div class="api-notice mb-4 text-start"><strong>API Key Required</strong> — click <strong>⚙ Settings</strong> (top right) to add your Anthropic API key.</div>` : ''}
         <div class="d-flex flex-column align-items-center gap-3">
           <button class="btn btn-primary btn-lg px-5 py-2" onclick="go('category')" ${!hasKey ? 'disabled' : ''}>
             Start New Session
           </button>
-          ${S.saved.length > 0 ? `
-            <button class="saved-chip" onclick="go('saved')">
-              📋 ${S.saved.length} saved topic${S.saved.length !== 1 ? 's' : ''} — View &amp; Export
-            </button>
-          ` : `<div class="text-muted small">No saved topics yet</div>`}
+          ${S.saved.length > 0
+            ? `<button class="saved-chip" onclick="go('saved')">📋 ${S.saved.length} saved topic${S.saved.length !== 1 ? 's' : ''} — View &amp; Export</button>`
+            : `<div class="text-muted small">No saved topics yet</div>`}
         </div>
-      </div>
-    `;
+      </div>`;
   },
 
   category() {
@@ -295,7 +283,8 @@ const VIEWS = {
       <div class="fade-in">
         ${wizardSteps(1)}
         <h5 class="fw-bold text-navy mb-1">Select a category</h5>
-        <p class="text-muted small mb-4">What type of news would you like to discuss?</p>
+        <p class="text-muted small mb-4">Choose a news category, browse recent headlines, or enter your own topic.</p>
+
         <div class="cat-grid mb-4">
           ${CATS.map(c => `
             <div class="cat-card" onclick="selectCat('${c.id}')">
@@ -305,38 +294,14 @@ const VIEWS = {
             </div>
           `).join('')}
         </div>
-        <button class="btn btn-outline-secondary btn-sm" onclick="go('welcome')">← Back</button>
-      </div>
-    `;
-  },
-
-  count() {
-    const cat = CATS.find(c => c.id === S.category);
-    return `
-      <div class="fade-in">
-        ${wizardSteps(2)}
-        ${catHeader(cat)}
-        <p class="text-muted small mb-4">Choose how to generate topics for this session.</p>
-
-        <!-- AI generate by count -->
-        <div class="card-box mb-3">
-          <div class="section-label mb-2">Generate by AI — how many topics?</div>
-          <div class="d-flex gap-3 flex-wrap mb-3">
-            ${[1,2,3,4,5].map(n => `
-              <button class="count-ring ${S.count === n ? 'sel' : ''}" onclick="setCount(${n})">${n}</button>
-            `).join('')}
-          </div>
-          <button class="btn btn-primary px-4" onclick="startGenerate()">Generate ${S.count} Topic${S.count !== 1 ? 's' : ''} →</button>
-        </div>
 
         <div class="or-divider">OR</div>
 
-        <!-- Alternative modes -->
         <button class="mode-btn" onclick="goRecentNews()">
           <span class="mode-btn-icon">📅</span>
           <div>
             <div class="mode-btn-label">From Recent News</div>
-            <div class="mode-btn-sub">Fetch headlines from the past 3 days and generate talking points</div>
+            <div class="mode-btn-sub">Fetch headlines from BBC, ABC &amp; CNN from the past 3 days</div>
           </div>
         </button>
 
@@ -349,91 +314,98 @@ const VIEWS = {
         </button>
 
         <div class="mt-3">
-          <button class="btn btn-outline-secondary btn-sm" onclick="go('category')">← Back</button>
+          <button class="btn btn-outline-secondary btn-sm" onclick="go('welcome')">← Back</button>
         </div>
-      </div>
-    `;
+      </div>`;
+  },
+
+  count() {
+    const cat = getCat(S.category);
+    return `
+      <div class="fade-in">
+        ${wizardSteps(2)}
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span style="font-size:1.6rem">${cat.icon}</span>
+          <h5 class="fw-bold text-navy mb-0">${cat.label}</h5>
+        </div>
+        <p class="text-muted small mb-4">How many topics would you like to generate?</p>
+        <div class="d-flex gap-3 flex-wrap mb-4">
+          ${[1,2,3,4,5].map(n => `
+            <button class="count-ring ${S.count === n ? 'sel' : ''}" onclick="setCount(${n})">${n}</button>
+          `).join('')}
+        </div>
+        <p class="text-muted small mb-4">Will generate <strong>${S.count}</strong> ${cat.label.toLowerCase()} topic${S.count !== 1 ? 's' : ''}</p>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary btn-sm" onclick="go('category')">← Back</button>
+          <button class="btn btn-primary px-4" onclick="startGenerate()">Generate ${S.count} Topic${S.count !== 1 ? 's' : ''} →</button>
+        </div>
+      </div>`;
   },
 
   fetchingNews() {
-    const cat = CATS.find(c => c.id === S.category);
     if (S.error) {
       return `
         <div class="gen-screen fade-in">
           <div class="err-box mb-4 text-start" style="max-width:420px">${esc(S.error)}</div>
           <div class="d-flex gap-2">
             <button class="btn btn-primary" onclick="goRecentNews()">Try Again</button>
-            <button class="btn btn-outline-secondary" onclick="go('count')">← Back</button>
+            <button class="btn btn-outline-secondary" onclick="go('category')">← Back</button>
           </div>
-        </div>
-      `;
+        </div>`;
     }
     return `
       <div class="gen-screen fade-in">
         <div class="spinner-ring"></div>
-        <h6 class="fw-semibold text-secondary">Fetching recent news...</h6>
-        <p class="text-muted small">${cat.icon} ${cat.label} headlines from the past 3 days</p>
-      </div>
-    `;
+        <h6 class="fw-semibold text-secondary">Fetching recent headlines...</h6>
+        <p class="text-muted small">BBC · ABC · CNN — past 3 days</p>
+      </div>`;
   },
 
   headlines() {
-    const cat = CATS.find(c => c.id === S.category);
     const nSel = Object.values(S.headlineSel).filter(Boolean).length;
     const allSel = S.headlines.length > 0 && nSel === S.headlines.length;
-
     return `
       <div class="fade-in">
-        ${wizardSteps(2)}
-        ${catHeader(cat)}
-        <p class="text-muted small mb-3">
-          Select the headlines you want talking points for.
-          ${S.headlines.length === 0 ? '' : `${S.headlines.length} recent article${S.headlines.length !== 1 ? 's' : ''} found.`}
-        </p>
+        ${wizardSteps(2, ['Category', 'Headlines', 'Review'])}
+        <h5 class="fw-bold text-navy mb-1">Recent Headlines</h5>
+        <p class="text-muted small mb-3">Tick the stories you want talking points for.</p>
 
-        ${S.headlines.length === 0 ? `
-          <div class="err-box mb-3">No articles found from the past 3 days for this category.</div>
-        ` : `
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="text-muted small">${nSel} selected</span>
-            <button class="act-link" onclick="selectAllHeadlines(${allSel ? 'false' : 'true'})">
-              ${allSel ? 'Deselect All' : 'Select All'}
-            </button>
-          </div>
-          ${S.headlines.map((h, i) => {
-            const sel = !!S.headlineSel[i];
-            return `
-              <div class="headline-row ${sel ? 'sel' : ''}" onclick="toggleHeadline(${i})">
-                <div class="hl-check ${sel ? 'on' : ''}">${sel ? '✓' : ''}</div>
-                <div>
-                  <div class="hl-title">${esc(h.title)}</div>
-                  <div class="hl-meta">${esc(h.date)}</div>
-                  ${h.desc ? `<div class="hl-desc">${esc(h.desc)}</div>` : ''}
-                </div>
-              </div>
-            `;
-          }).join('')}
-        `}
+        ${S.headlines.length === 0
+          ? `<div class="err-box mb-3">No articles found from the past 3 days. Try again later.</div>`
+          : `
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted small">${nSel} selected</span>
+              <button class="act-link" onclick="selectAllHeadlines(${allSel ? 'false' : 'true'})">${allSel ? 'Deselect All' : 'Select All'}</button>
+            </div>
+            ${S.headlines.map((h, i) => {
+              const sel = !!S.headlineSel[i];
+              return `
+                <div class="headline-row ${sel ? 'sel' : ''}" onclick="toggleHeadline(${i})">
+                  <div class="hl-check ${sel ? 'on' : ''}">${sel ? '✓' : ''}</div>
+                  <div>
+                    <div class="hl-title">
+                      <span class="source-badge">${esc(h.source)}</span>${esc(h.title)}
+                    </div>
+                    <div class="hl-meta">${esc(h.date)}</div>
+                    ${h.desc ? `<div class="hl-desc">${esc(h.desc)}</div>` : ''}
+                  </div>
+                </div>`;
+            }).join('')}
+          `}
 
         <div class="d-flex gap-2 mt-3">
-          <button class="btn btn-outline-secondary btn-sm" onclick="go('count')">← Back</button>
-          ${nSel > 0 ? `
-            <button class="btn btn-primary px-4" onclick="generateFromHeadlines()">
-              Generate Talking Points for ${nSel} headline${nSel !== 1 ? 's' : ''} →
-            </button>
-          ` : ''}
+          <button class="btn btn-outline-secondary btn-sm" onclick="go('category')">← Back</button>
+          ${nSel > 0 ? `<button class="btn btn-primary px-4" onclick="generateFromHeadlines()">Generate for ${nSel} headline${nSel !== 1 ? 's' : ''} →</button>` : ''}
         </div>
-      </div>
-    `;
+      </div>`;
   },
 
   customTopic() {
-    const cat = CATS.find(c => c.id === S.category);
     return `
       <div class="fade-in">
-        ${wizardSteps(2)}
-        ${catHeader(cat)}
-        <p class="text-muted small mb-4">Enter your topic and Claude will write the summary and talking points.</p>
+        ${wizardSteps(2, ['Category', 'Topic', 'Review'])}
+        <h5 class="fw-bold text-navy mb-1">My Own Topic</h5>
+        <p class="text-muted small mb-4">Enter a topic and Claude will write the summary and talking points.</p>
 
         <div class="form-section">
           <div class="mb-3">
@@ -446,42 +418,43 @@ const VIEWS = {
             <label class="form-label fw-semibold">Context <span class="text-muted fw-normal">(optional)</span></label>
             <textarea id="customContextInput" class="form-control" rows="4"
               placeholder="Paste a news excerpt, key facts, or describe what you know about the topic...">${esc(S.customContext)}</textarea>
-            <div class="form-text">Adding context gives Claude more to work with and produces better talking points.</div>
+            <div class="form-text">Adding context produces better talking points.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Category</label>
+            <select id="customCatInput" class="form-select">
+              ${CATS.map(c => `<option value="${c.id}" ${S.customCat === c.id ? 'selected' : ''}>${c.label}</option>`).join('')}
+            </select>
           </div>
           ${S.error ? `<div class="err-box mb-3">${esc(S.error)}</div>` : ''}
           <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary" onclick="go('count')">← Back</button>
+            <button class="btn btn-outline-secondary" onclick="go('category')">← Back</button>
             <button class="btn btn-primary px-4" onclick="generateCustomTopic()">Generate Talking Points →</button>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   },
 
   generating() {
-    const cat = CATS.find(c => c.id === S.category);
     if (S.error) {
       return `
         <div class="gen-screen fade-in">
           <div class="err-box mb-4 text-start" style="max-width:420px">${esc(S.error)}</div>
           <div class="d-flex gap-2">
             <button class="btn btn-primary" onclick="startGenerate()">Try Again</button>
-            <button class="btn btn-outline-secondary" onclick="go('count')">← Back</button>
+            <button class="btn btn-outline-secondary" onclick="go('category')">← Back</button>
           </div>
-        </div>
-      `;
+        </div>`;
     }
     return `
       <div class="gen-screen fade-in">
         <div class="spinner-ring"></div>
-        <h6 class="fw-semibold text-secondary">${esc(S.genMsg || 'Generating topics...')}</h6>
-        <p class="text-muted small">${cat.icon} ${cat.label}</p>
-      </div>
-    `;
+        <h6 class="fw-semibold text-secondary">${esc(S.genMsg || 'Generating...')}</h6>
+      </div>`;
   },
 
   review() {
-    const cat  = CATS.find(c => c.id === S.category);
+    const cat    = getCat(S.category);
     const nSaved = S.topics.filter(t => t._saved).length;
     return `
       <div class="fade-in">
@@ -492,17 +465,14 @@ const VIEWS = {
           </span>
           <span class="text-muted small">${nSaved} marked to save</span>
         </div>
-
         ${S.topics.map((t, i) => topicCard(t, i)).join('')}
-
         <div class="card-box mt-2 d-flex gap-2 align-items-center">
           <button class="btn btn-success flex-fill fw-semibold" onclick="finishSession()">
             ✓ Save ${nSaved} topic${nSaved !== 1 ? 's' : ''} &amp; finish
           </button>
           <button class="btn btn-outline-secondary" onclick="go('welcome')">Cancel</button>
         </div>
-      </div>
-    `;
+      </div>`;
   },
 
   done() {
@@ -511,21 +481,13 @@ const VIEWS = {
       <div class="hero fade-in">
         <div class="hero-icon">✅</div>
         <h3 class="fw-bold text-navy">Session Complete</h3>
-        <p class="text-muted mb-4">
-          ${n} topic${n !== 1 ? 's' : ''} saved.
-          ${S.saved.length > 0 ? `${S.saved.length} total in your collection.` : ''}
-        </p>
+        <p class="text-muted mb-4">${n} topic${n !== 1 ? 's' : ''} saved. ${S.saved.length > 0 ? `${S.saved.length} total in your collection.` : ''}</p>
         <div class="d-flex flex-column align-items-center gap-3">
           <button class="btn btn-primary btn-lg px-5" onclick="go('category')">Generate More Topics</button>
-          ${S.saved.length > 0 ? `
-            <button class="saved-chip" onclick="go('saved')">
-              📋 ${S.saved.length} saved topics — View &amp; Export
-            </button>
-          ` : ''}
+          ${S.saved.length > 0 ? `<button class="saved-chip" onclick="go('saved')">📋 ${S.saved.length} saved topics — View &amp; Export</button>` : ''}
           <button class="btn btn-link text-muted btn-sm" onclick="go('welcome')">Home</button>
         </div>
-      </div>
-    `;
+      </div>`;
   },
 
   saved() {
@@ -535,8 +497,7 @@ const VIEWS = {
           <div style="font-size:3rem">📭</div>
           <p class="text-muted mt-2">No saved topics yet.</p>
           <button class="btn btn-primary" onclick="go('category')">Generate Topics</button>
-        </div>
-      `;
+        </div>`;
     }
     return `
       <div class="fade-in">
@@ -552,8 +513,7 @@ const VIEWS = {
           <button class="btn btn-outline-secondary btn-sm" onclick="go('welcome')">← Home</button>
           <button class="btn btn-primary btn-sm" onclick="go('category')">Generate More</button>
         </div>
-      </div>
-    `;
+      </div>`;
   },
 };
 
@@ -577,18 +537,14 @@ function topicCard(t, i) {
         <div class="mb-3">
           <div class="d-flex justify-content-between align-items-center mb-1">
             <div class="section-label">Summary</div>
-            <button class="act-link" onclick="rewriteSummary(${i})" ${busySum ? 'disabled' : ''}>
-              ${busySum ? '⟳ Rewriting...' : '↺ Rewrite'}
-            </button>
+            <button class="act-link" onclick="rewriteSummary(${i})" ${busySum ? 'disabled' : ''}>${busySum ? '⟳ Rewriting...' : '↺ Rewrite'}</button>
           </div>
           <p class="topic-desc${busySum ? ' opacity-50' : ''}">${esc(t.description)}</p>
         </div>
         <div>
           <div class="d-flex justify-content-between align-items-center mb-1">
             <div class="section-label">Talking Points</div>
-            <button class="act-link" onclick="addTP(${i})" ${busyAdd ? 'disabled' : ''}>
-              ${busyAdd ? '⟳ Adding...' : '+ Add Point'}
-            </button>
+            <button class="act-link" onclick="addTP(${i})" ${busyAdd ? 'disabled' : ''}>${busyAdd ? '⟳ Adding...' : '+ Add Point'}</button>
           </div>
           ${t.talkingPoints.length === 0 ? `<p class="text-muted small fst-italic">No talking points.</p>` : ''}
           ${t.talkingPoints.map((p, pi) => `
@@ -596,16 +552,14 @@ function topicCard(t, i) {
               <span class="tp-n">${pi + 1}.</span>
               <span class="tp-t">${esc(p)}</span>
               <button class="tp-x" onclick="deleteTP(${i},${pi})" title="Delete">✕</button>
-            </div>
-          `).join('')}
+            </div>`).join('')}
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function savedRow(t, i) {
-  const cat = CATS.find(c => c.id === t._category) || { label: 'Custom', icon: '✍️', bg: '#f7fafc', color: '#4a5568' };
+  const cat = getCat(t._category);
   return `
     <div class="saved-row">
       <div class="d-flex justify-content-between align-items-start gap-2">
@@ -616,59 +570,40 @@ function savedRow(t, i) {
           ${t.talkingPoints.length > 0 ? `
             <ol class="mt-2 mb-0 ps-3" style="font-size:0.82rem; color:#4a5568">
               ${t.talkingPoints.map(p => `<li>${esc(p)}</li>`).join('')}
-            </ol>
-          ` : ''}
+            </ol>` : ''}
         </div>
         <button class="btn btn-sm btn-outline-danger flex-shrink-0 mt-1" onclick="removeSaved(${i})">✕</button>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 // ── Navigation ─────────────────────────────────────────
-function selectCat(id) {
-  S.category = id;
-  go('count');
-}
-
-function setCount(n) {
-  S.count = n;
-  render();
-}
+function selectCat(id) { S.category = id; go('count'); }
+function setCount(n)    { S.count = n; render(); }
 
 // ── AI: Generate by count ──────────────────────────────
 async function startGenerate() {
-  S.error = null;
+  S.error  = null;
   S.genMsg = `Generating ${S.count} topic${S.count !== 1 ? 's' : ''}...`;
   go('generating');
 
-  const cat = CATS.find(c => c.id === S.category);
+  const cat   = getCat(S.category);
   const today = new Date().toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
 
   const prompt = `You are generating current affairs discussion topics for an Australian discussion group meeting in ${today}.
 
 Generate exactly ${S.count} topics covering: ${cat.prompt}.
 
-Return ONLY a valid JSON array with no other text, markdown, or explanation:
+Return ONLY a valid JSON array, no other text:
 [
   {
     "title": "Clear headline (max 12 words)",
     "description": "2–3 sentences summarising the issue, its significance, and current context.",
-    "talkingPoints": [
-      "First discussion question or angle",
-      "Second perspective or question",
-      "Third angle",
-      "Fourth discussion point"
-    ]
+    "talkingPoints": ["First question or angle","Second perspective","Third angle","Fourth discussion point"]
   }
 ]
 
-Rules:
-- Topics must be substantive and genuinely discussion-worthy
-- Talking points should offer different angles and encourage debate
-- Australian spelling throughout
-- Each topic must be clearly distinct
-- Return valid JSON only, no markdown fences`;
+Rules: substantive topics, different angles in talking points, Australian spelling, clearly distinct topics, valid JSON only.`;
 
   try {
     const topics = await callClaude(prompt, true);
@@ -681,104 +616,91 @@ Rules:
   }
 }
 
-// ── Recent News: fetch RSS ─────────────────────────────
+// ── Recent News ────────────────────────────────────────
+const RSS_FEEDS = [
+  { url: 'https://feeds.bbci.co.uk/news/world/rss.xml',       source: 'BBC' },
+  { url: 'https://www.abc.net.au/news/feed/2942460/rss.xml',  source: 'ABC' },
+  { url: 'https://rss.cnn.com/rss/edition.rss',               source: 'CNN' },
+];
+
 async function goRecentNews() {
   S.error = null;
   S.headlines = [];
   S.headlineSel = {};
+  S.category = 'recent';
   go('fetchingNews');
 
-  const cat = CATS.find(c => c.id === S.category);
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(cat.rss)}`;
-
   try {
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error(`Fetch error ${res.status}`);
-    const data = await res.json();
-
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(data.contents, 'text/xml');
-    const items = Array.from(xml.querySelectorAll('item'));
-
+    const results = await Promise.allSettled(RSS_FEEDS.map(f => fetchFeed(f.url, f.source)));
     const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
 
-    S.headlines = items
-      .map(item => {
-        const pubDate = new Date(item.querySelector('pubDate')?.textContent || '');
-        const rawDesc = item.querySelector('description')?.textContent || '';
-        const desc = rawDesc.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').slice(0, 200).trim();
-        return {
-          title: item.querySelector('title')?.textContent?.trim() || '',
-          date:  isNaN(pubDate) ? '' : pubDate.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' }),
-          ts:    isNaN(pubDate) ? 0 : pubDate.getTime(),
-          desc,
-        };
-      })
+    const all = results
+      .filter(r => r.status === 'fulfilled')
+      .flatMap(r => r.value)
       .filter(h => h.title && h.ts >= threeDaysAgo)
-      .slice(0, 12);
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, 18);
 
-    if (S.headlines.length === 0) {
-      // Show the page anyway with the "no articles" message
-    }
-
+    S.headlines = all;
     go('headlines');
   } catch(e) {
-    S.error = `Could not fetch news: ${e.message}. Check your internet connection.`;
+    S.error = `Could not fetch news: ${e.message}`;
     render();
   }
 }
 
-function toggleHeadline(idx) {
-  S.headlineSel[idx] = !S.headlineSel[idx];
-  render();
+async function fetchFeed(url, source) {
+  const res  = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+  if (!res.ok) throw new Error(`${source}: ${res.status}`);
+  const data = await res.json();
+  const xml  = new DOMParser().parseFromString(data.contents, 'text/xml');
+
+  return Array.from(xml.querySelectorAll('item')).map(item => {
+    const pubDate = new Date(item.querySelector('pubDate')?.textContent || '');
+    const rawDesc = item.querySelector('description')?.textContent || '';
+    const desc    = rawDesc.replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').slice(0, 180).trim();
+    return {
+      title:  item.querySelector('title')?.textContent?.trim() || '',
+      date:   isNaN(pubDate) ? '' : pubDate.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' }),
+      ts:     isNaN(pubDate) ? 0 : pubDate.getTime(),
+      desc,
+      source,
+    };
+  });
 }
 
-function selectAllHeadlines(val) {
-  S.headlines.forEach((_, i) => { S.headlineSel[i] = val; });
-  render();
-}
+function toggleHeadline(idx)    { S.headlineSel[idx] = !S.headlineSel[idx]; render(); }
+function selectAllHeadlines(val){ S.headlines.forEach((_, i) => { S.headlineSel[i] = val; }); render(); }
 
 async function generateFromHeadlines() {
   const selected = S.headlines.filter((_, i) => S.headlineSel[i]);
   if (selected.length === 0) return;
 
-  S.error = null;
+  S.error  = null;
   S.genMsg = `Generating talking points for ${selected.length} headline${selected.length !== 1 ? 's' : ''}...`;
   go('generating');
 
-  const cat = CATS.find(c => c.id === S.category);
-  const headlineList = selected.map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}`).join('\n');
+  const list = selected.map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}`).join('\n');
 
   const prompt = `You are generating structured current affairs discussion topics for an Australian group.
 
-Based on the following real news headlines, generate one discussion topic per headline.
+Based on these real news headlines, create one discussion topic per headline:
+${list}
 
-Headlines:
-${headlineList}
-
-Return ONLY a valid JSON array with one object per headline, in the same order:
+Return ONLY a valid JSON array, one object per headline, same order:
 [
   {
-    "title": "The headline or a clear restatement of it (max 12 words)",
-    "description": "2–3 sentences summarising the story, its significance, and context for an Australian audience.",
-    "talkingPoints": [
-      "First discussion question or angle",
-      "Second perspective or question",
-      "Third angle",
-      "Fourth discussion point"
-    ]
+    "title": "The headline or a clear restatement (max 12 words)",
+    "description": "2–3 sentences summarising the story and its significance for an Australian audience.",
+    "talkingPoints": ["First discussion question","Second angle","Third perspective","Fourth discussion point"]
   }
 ]
 
-Rules:
-- Keep title faithful to the original headline
-- Talking points should encourage debate and different viewpoints
-- Australian spelling throughout
-- Return valid JSON only, no markdown fences`;
+Rules: faithful to headlines, encourage debate, Australian spelling, valid JSON only.`;
 
   try {
     const topics = await callClaude(prompt, true);
-    topics.forEach(t => { t._saved = false; t._category = S.category; });
+    topics.forEach(t => { t._saved = false; t._category = 'recent'; });
     S.topics = topics;
     go('review');
   } catch(e) {
@@ -789,121 +711,74 @@ Rules:
 
 // ── Custom topic ───────────────────────────────────────
 async function generateCustomTopic() {
-  const titleEl   = document.getElementById('customTitleInput');
-  const contextEl = document.getElementById('customContextInput');
-
-  const title   = titleEl?.value.trim() || '';
-  const context = contextEl?.value.trim() || '';
-
-  if (!title) {
-    S.customTitle   = title;
-    S.customContext = context;
-    S.error = 'Please enter a topic title.';
-    render();
-    return;
-  }
+  const title   = document.getElementById('customTitleInput')?.value.trim()   || '';
+  const context = document.getElementById('customContextInput')?.value.trim() || '';
+  const catId   = document.getElementById('customCatInput')?.value             || 'international';
 
   S.customTitle   = title;
   S.customContext = context;
-  S.error = null;
-  S.genMsg = `Generating talking points for "${title}"...`;
+  S.customCat     = catId;
+
+  if (!title) { S.error = 'Please enter a topic title.'; render(); return; }
+
+  S.error    = null;
+  S.category = catId;
+  S.genMsg   = `Generating talking points for "${title}"...`;
   go('generating');
 
-  const cat = CATS.find(c => c.id === S.category);
+  const cat = getCat(catId);
 
   const prompt = `You are generating a structured current affairs discussion topic for an Australian group.
 
 Topic: ${title}
-${context ? `\nContext provided:\n${context}` : ''}
-Category: ${cat.label}
+Category: ${cat.label}${context ? `\n\nContext:\n${context}` : ''}
 
-Return ONLY a valid JSON array containing exactly one object:
+Return ONLY a valid JSON array with exactly one object:
 [
   {
     "title": "${title}",
-    "description": "2–3 sentences summarising the issue, its significance, and relevant context.",
-    "talkingPoints": [
-      "First discussion question or angle",
-      "Second perspective or question",
-      "Third angle",
-      "Fourth discussion point"
-    ]
+    "description": "2–3 sentences summarising the issue and its significance.",
+    "talkingPoints": ["First discussion question","Second angle","Third perspective","Fourth discussion point"]
   }
 ]
 
-Rules:
-- Use the exact title provided
-- Talking points should encourage debate and different viewpoints
-- Australian spelling throughout
-- Return valid JSON only, no markdown fences`;
+Rules: use the exact title, encourage debate, Australian spelling, valid JSON only.`;
 
   try {
     const topics = await callClaude(prompt, true);
-    topics.forEach(t => { t._saved = false; t._category = S.category; });
+    topics.forEach(t => { t._saved = false; t._category = catId; });
     S.topics = topics;
     go('review');
   } catch(e) {
-    S.error = `Could not generate topic: ${e.message}`;
-    S.view = 'customTopic';
+    S.error   = `Could not generate topic: ${e.message}`;
+    S.view    = 'customTopic';
     render();
   }
 }
 
 // ── Topic review actions ───────────────────────────────
-function toggleSave(idx) {
-  S.topics[idx]._saved = !S.topics[idx]._saved;
-  render();
-}
-
-function deleteTP(topicIdx, ptIdx) {
-  S.topics[topicIdx].talkingPoints.splice(ptIdx, 1);
-  render();
-}
+function toggleSave(idx) { S.topics[idx]._saved = !S.topics[idx]._saved; render(); }
+function deleteTP(ti, pi) { S.topics[ti].talkingPoints.splice(pi, 1); render(); }
 
 async function rewriteSummary(idx) {
-  S.loadingIdx = idx;
-  S.loadingAction = 'summary';
-  render();
-
+  S.loadingIdx = idx; S.loadingAction = 'summary'; render();
   const t = S.topics[idx];
-  const prompt = `Rewrite the following news summary for the topic "${t.title}". Make it clear and engaging for a discussion group. Return only the new summary (2–3 sentences), no other text.
-
-Current summary: ${t.description}`;
-
   try {
-    const text = await callClaude(prompt, false);
+    const text = await callClaude(`Rewrite this news summary for "${t.title}". Clear and engaging for a discussion group. Return only the new summary (2–3 sentences), no other text.\n\nCurrent: ${t.description}`, false);
     S.topics[idx].description = text.trim();
   } catch(e) { /* keep original */ }
-  finally {
-    S.loadingIdx = null;
-    S.loadingAction = null;
-    render();
-  }
+  finally { S.loadingIdx = null; S.loadingAction = null; render(); }
 }
 
 async function addTP(idx) {
-  S.loadingIdx = idx;
-  S.loadingAction = 'addTP';
-  render();
-
+  S.loadingIdx = idx; S.loadingAction = 'addTP'; render();
   const t = S.topics[idx];
-  const existing = t.talkingPoints.map((p, i) => `${i + 1}. ${p}`).join('\n');
-  const prompt = `For the current affairs topic "${t.title}", generate one additional discussion talking point that is different from the existing ones.
-
-Existing points:
-${existing}
-
-Return only the new talking point (one sentence, no numbering), no other text.`;
-
+  const existing = t.talkingPoints.map((p, i) => `${i+1}. ${p}`).join('\n');
   try {
-    const text = await callClaude(prompt, false);
+    const text = await callClaude(`For the topic "${t.title}", one additional discussion talking point different from these:\n${existing}\n\nReturn only the new talking point (one sentence, no numbering).`, false);
     S.topics[idx].talkingPoints.push(text.trim());
   } catch(e) { /* keep original */ }
-  finally {
-    S.loadingIdx = null;
-    S.loadingAction = null;
-    render();
-  }
+  finally { S.loadingIdx = null; S.loadingAction = null; render(); }
 }
 
 function finishSession() {
@@ -916,17 +791,10 @@ function finishSession() {
   go('done');
 }
 
-function removeSaved(idx) {
-  S.saved.splice(idx, 1);
-  persistSaved();
-  render();
-}
-
+function removeSaved(idx) { S.saved.splice(idx, 1); persistSaved(); render(); }
 function clearAll() {
   if (!confirm(`Delete all ${S.saved.length} saved topics?`)) return;
-  S.saved = [];
-  persistSaved();
-  render();
+  S.saved = []; persistSaved(); render();
 }
 
 // ── Claude API ─────────────────────────────────────────
@@ -955,7 +823,6 @@ async function callClaude(prompt, parseJson) {
 
   const data = await res.json();
   const text = data.content[0].text;
-
   if (!parseJson) return text;
 
   const match = text.match(/\[[\s\S]*\]/);
@@ -969,7 +836,6 @@ function showSettings() {
   document.getElementById('modelSelect').value = S.model;
   bootstrap.Modal.getOrCreateInstance(document.getElementById('settingsModal')).show();
 }
-
 function saveSettings() {
   S.apiKey = document.getElementById('apiKeyInput').value.trim();
   S.model  = document.getElementById('modelSelect').value;
@@ -986,87 +852,63 @@ function exportToWord() {
   });
 
   let body = '';
+  const catOrder = [...CATS.map(c => c.id), 'recent', 'custom'];
 
-  const catOrder = [...CATS.map(c => c.id), 'custom'];
   catOrder.forEach(catId => {
     const topics = S.saved.filter(t => t._category === catId);
     if (topics.length === 0) return;
+    const cat = getCat(catId);
 
-    const cat = CATS.find(c => c.id === catId) || { label: 'Custom', icon: '✍️' };
-    body += `<h2 class="cat-head">${escHtml(cat.label)}</h2>`;
-
+    body += `<h2 class="cat-head">${esc(cat.label)}</h2>`;
     topics.forEach((t, i) => {
       if (i > 0) body += '<hr class="topic-rule">';
-      body += `<h3 class="topic-title">${escHtml(t.title)}</h3>`;
-      if (t.description) body += `<p class="topic-desc">${escHtml(t.description)}</p>`;
+      body += `<h3 class="topic-title">${esc(t.title)}</h3>`;
+      if (t.description) body += `<p class="topic-desc">${esc(t.description)}</p>`;
       body += '<p class="tp-label">Talking Points</p><ol>';
-      (t.talkingPoints || []).forEach(p => { body += `<li>${escHtml(p)}</li>`; });
+      (t.talkingPoints || []).forEach(p => { body += `<li>${esc(p)}</li>`; });
       body += '</ol>';
     });
   });
 
-  const html = `
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:w="urn:schemas-microsoft-com:office:word"
-      xmlns="http://www.w3.org/TR/REC-html40">
-<head>
-<meta charset="utf-8">
-<title>Current Affairs Group</title>
+  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>Current Affairs Group</title>
 <style>
-  body        { font-family: Calibri, sans-serif; font-size: 11pt; margin: 2cm; }
-  h1          { font-size: 20pt; color: #1e3a5f; text-align: center; margin-bottom: 4pt; }
-  .date       { text-align: center; color: #718096; font-size: 10pt; margin-top: 0; }
-  .rule       { border: none; border-top: 3pt solid #2b6cb0; margin: 12pt 0 18pt; }
+  body { font-family: Calibri, sans-serif; font-size: 11pt; margin: 2cm; }
+  h1   { font-size: 20pt; color: #1e3a5f; text-align: center; margin-bottom: 4pt; }
+  .date{ text-align: center; color: #718096; font-size: 10pt; margin-top: 0; }
+  .rule{ border: none; border-top: 3pt solid #2b6cb0; margin: 12pt 0 18pt; }
   .cat-head   { font-size: 14pt; font-weight: bold; color: #1e3a5f; margin-top: 20pt; margin-bottom: 4pt; border-bottom: 1pt solid #e2e8f0; padding-bottom: 4pt; }
   .topic-title{ font-size: 12pt; font-weight: bold; color: #1e3a5f; margin: 12pt 0 4pt; }
   .topic-desc { font-style: italic; color: #4a5568; margin: 0 0 8pt; }
   .tp-label   { font-weight: bold; text-decoration: underline; margin: 8pt 0 4pt; }
-  ol          { margin: 0 0 8pt; padding-left: 18pt; }
-  li          { margin-bottom: 4pt; }
+  ol { margin: 0 0 8pt; padding-left: 18pt; }
+  li { margin-bottom: 4pt; }
   .topic-rule { border: none; border-top: 1pt dashed #e2e8f0; margin: 12pt 0; }
   .footer     { text-align: center; color: #aaaaaa; font-size: 8pt; margin-top: 24pt; }
-</style>
-</head>
+</style></head>
 <body>
 <h1>Current Affairs Group</h1>
-<p class="date">${escHtml(dateStr)}</p>
+<p class="date">${esc(dateStr)}</p>
 <hr class="rule">
 ${body}
 <p class="footer">Generated ${new Date().toLocaleDateString('en-AU')}</p>
-</body>
-</html>`;
+</body></html>`;
 
   const blob = new Blob(['﻿' + html], { type: 'application/msword' });
   const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `Current_Affairs_Group_${new Date().toISOString().slice(0,10)}.doc`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function escHtml(s) {
-  return String(s || '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
+  const a    = Object.assign(document.createElement('a'), { href: url, download: `Current_Affairs_Group_${new Date().toISOString().slice(0,10)}.doc` });
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
 // ── Util ──────────────────────────────────────────────
 function esc(s) {
-  return String(s || '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ── Init ─────────────────────────────────────────────
 loadSaved();
 render();
-
 </script>
 </body>
 </html>

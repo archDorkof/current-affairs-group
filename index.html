@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Current Affairs Group</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root { --navy: #1e3a5f; --blue: #2b6cb0; }
+
+    body { background: #f0f4f8; font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+    .app-header {
+      background: var(--navy);
+      color: white;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .app-header h1 { font-size: 1.15rem; font-weight: 700; margin: 0; }
+    .app-header .sub { font-size: 0.72rem; opacity: 0.55; }
+
+    /* Steps */
+    .wizard-steps {
+      display: flex; gap: 0; margin-bottom: 1.75rem;
+      border-radius: 8px; overflow: hidden;
+      border: 1px solid #e2e8f0;
+      background: white;
+    }
+    .ws { flex: 1; text-align: center; padding: 0.6rem 0.4rem; font-size: 0.75rem; color: #a0aec0; border-right: 1px solid #e2e8f0; }
+    .ws:last-child { border-right: none; }
+    .ws.active { background: var(--navy); color: white; font-weight: 600; }
+    .ws.done { background: #ebf4ff; color: var(--blue); }
+
+    /* Welcome */
+    .hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
+    .hero-icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
+    .hero-title { font-size: 1.6rem; font-weight: 800; color: var(--navy); margin-bottom: 0.4rem; }
+    .saved-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: #ebf4ff; color: var(--blue); border: none;
+      padding: 0.45rem 1.1rem; border-radius: 999px;
+      font-size: 0.875rem; font-weight: 600; cursor: pointer;
+    }
+    .saved-chip:hover { background: #dbeafe; }
+
+    /* API notice */
+    .api-notice { background: #fffbeb; border: 1px solid #f6e05e; border-radius: 8px; padding: 0.9rem 1.1rem; font-size: 0.85rem; }
+
+    /* Category cards */
+    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+    .cat-card {
+      background: white; border-radius: 10px; padding: 1.4rem 1rem;
+      text-align: center; cursor: pointer;
+      border: 2px solid #e2e8f0;
+      transition: transform 0.1s, box-shadow 0.1s, border-color 0.1s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .cat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+    .cat-card:active { transform: scale(0.97); }
+    .cat-icon-big { font-size: 2.4rem; margin-bottom: 0.5rem; display: block; }
+    .cat-name { font-weight: 700; font-size: 1rem; }
+    .cat-sub  { font-size: 0.75rem; color: #718096; margin-top: 0.25rem; }
+
+    /* Count picker */
+    .count-ring {
+      width: 3.2rem; height: 3.2rem; border-radius: 50%;
+      border: 2px solid #e2e8f0; background: white;
+      font-size: 1.15rem; font-weight: 700; color: #4a5568;
+      cursor: pointer; transition: all 0.1s;
+    }
+    .count-ring:hover { border-color: var(--blue); color: var(--blue); }
+    .count-ring.sel { background: var(--blue); border-color: var(--blue); color: white; }
+
+    /* Generating */
+    .gen-screen { min-height: 55vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .spinner-ring {
+      width: 56px; height: 56px;
+      border: 5px solid #e2e8f0; border-top-color: var(--blue);
+      border-radius: 50%; animation: spin 0.75s linear infinite; margin-bottom: 1.25rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Topic cards */
+    .topic-card {
+      background: white; border-radius: 10px;
+      margin-bottom: 1.1rem;
+      border-left: 4px solid #e2e8f0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      overflow: hidden;
+      transition: border-left-color 0.2s;
+    }
+    .topic-card.is-saved { border-left-color: #38a169; }
+    .topic-saved-strip {
+      background: #f0fff4; padding: 0.3rem 1.1rem;
+      font-size: 0.75rem; font-weight: 600; color: #276749;
+      border-bottom: 1px solid #c6f6d5;
+    }
+    .tc-head { padding: 0.9rem 1.1rem 0.7rem; border-bottom: 1px solid #f0f4f8; }
+    .tc-body { padding: 0.9rem 1.1rem; }
+    .topic-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin: 0; line-height: 1.4; }
+
+    .section-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: #a0aec0; margin-bottom: 0.35rem;
+    }
+    .topic-desc { font-size: 0.875rem; color: #4a5568; line-height: 1.6; margin: 0; }
+
+    /* Talking point rows */
+    .tp-row { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.45rem 0; border-bottom: 1px solid #f7fafc; }
+    .tp-row:last-child { border-bottom: none; }
+    .tp-n { font-size: 0.75rem; font-weight: 700; color: #718096; flex-shrink: 0; padding-top: 0.15rem; min-width: 1.2rem; }
+    .tp-t { flex: 1; font-size: 0.875rem; color: #2d3748; line-height: 1.5; }
+    .tp-x { background: none; border: none; color: #fc8181; font-size: 1rem; line-height: 1; cursor: pointer; flex-shrink: 0; padding: 0 0.15rem; opacity: 0.65; }
+    .tp-x:hover { opacity: 1; color: #e53e3e; }
+
+    /* Action links */
+    .act-link { background: none; border: none; color: var(--blue); font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0; }
+    .act-link:hover { color: #1a4a8a; }
+    .act-link:disabled { color: #a0aec0; cursor: default; }
+
+    /* Save toggle button */
+    .btn-save-toggle {
+      font-size: 0.8rem; font-weight: 600; border-radius: 999px;
+      padding: 0.3rem 0.9rem; border: 1.5px solid #e2e8f0;
+      background: white; color: #718096; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-save-toggle:hover { border-color: #38a169; color: #38a169; }
+    .btn-save-toggle.on { background: #38a169; border-color: #38a169; color: white; }
+
+    /* Saved topics list */
+    .saved-row {
+      background: white; border-radius: 8px; padding: 0.9rem 1.1rem;
+      margin-bottom: 0.7rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .cat-pill {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      padding: 0.2rem 0.6rem; border-radius: 999px;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem;
+    }
+
+    /* Error */
+    .err-box { background: #fff5f5; border-left: 4px solid #e53e3e; padding: 0.9rem 1.1rem; border-radius: 6px; color: #c53030; font-size: 0.875rem; }
+
+    /* Utils */
+    .card-box { background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+    .fade-in { animation: fi 0.18s ease; }
+    @keyframes fi { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .text-navy { color: var(--navy); }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <div>
+    <h1>Current Affairs Group</h1>
+    <div class="sub">Talking Points Generator</div>
+  </div>
+  <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
+</header>
+
+<main class="container py-4" id="app" style="max-width:680px"></main>
+
+<!-- Settings Modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold">Settings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Anthropic API Key</label>
+          <input type="password" id="apiKeyInput" class="form-control" placeholder="sk-ant-...">
+          <div class="form-text">Saved locally in your browser only. Never transmitted except to Anthropic's API.</div>
+        </div>
+        <div>
+          <label class="form-label fw-semibold">Model</label>
+          <select id="modelSelect" class="form-select">
+            <option value="claude-haiku-4-5-20251001">Claude Haiku — faster &amp; cheaper</option>
+            <option value="claude-sonnet-4-6">Claude Sonnet — higher quality</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button class="btn btn-primary px-4" onclick="saveSettings()">Save</button>
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script>
+
+// ── Categories ────────────────────────────────────────
+const CATS = [
+  {
+    id: 'international', label: 'International', icon: '🌏',
+    color: '#1a56db', bg: '#ebf5fb',
+    sub: 'Global news & world affairs',
+    prompt: 'major international current affairs — global politics, international conflicts, climate agreements, world economic trends, and significant world events',
+  },
+  {
+    id: 'national', label: 'National', icon: '🇦🇺',
+    color: '#057a55', bg: '#f0fff4',
+    sub: 'Australian federal politics & news',
+    prompt: 'Australian national current affairs — federal government policy, the Australian economy, national social issues, healthcare, and major Australian news events',
+  },
+  {
+    id: 'nsw', label: 'NSW', icon: '🏛️',
+    color: '#6c2bd9', bg: '#faf5ff',
+    sub: 'NSW state government & issues',
+    prompt: 'NSW state current affairs — NSW government policy, state budget and services, infrastructure projects, education, health, and significant NSW news',
+  },
+  {
+    id: 'local', label: 'Local', icon: '📍',
+    color: '#b45309', bg: '#fffbeb',
+    sub: 'Mudgee & Central West NSW',
+    prompt: 'local current affairs relevant to Mudgee and the Central West region of NSW — Mudgee Regional Council decisions, regional infrastructure and development, agriculture and wine industry, tourism, community issues, and events in the Mudgee, Orange, and Bathurst area',
+  },
+];
+
+// ── State ─────────────────────────────────────────────
+const S = {
+  view: 'welcome',
+  category: null,
+  count: 5,
+  topics: [],
+  saved: [],
+  apiKey: localStorage.getItem('cag_key') || '',
+  model:  localStorage.getItem('cag_model') || 'claude-haiku-4-5-20251001',
+  error: null,
+  loadingIdx: null,
+  loadingAction: null,
+};
+
+function loadSaved() {
+  try { S.saved = JSON.parse(localStorage.getItem('cag_saved') || '[]'); } catch(e) { S.saved = []; }
+}
+function persistSaved() {
+  localStorage.setItem('cag_saved', JSON.stringify(S.saved));
+}
+
+// ── Render ─────────────────────────────────────────────
+function render() {
+  document.getElementById('app').innerHTML = VIEWS[S.view]();
+}
+
+function go(view) {
+  S.view = view;
+  S.error = null;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Wizard steps indicator ─────────────────────────────
+function wizardSteps(active) {
+  // active: 1=Category, 2=Count, 3=Review
+  const labels = ['Category', 'Count', 'Review'];
+  return `
+    <div class="wizard-steps mb-4">
+      ${labels.map((l, i) => {
+        const n = i + 1;
+        const cls = n === active ? 'active' : n < active ? 'done' : '';
+        return `<div class="ws ${cls}">${n < active ? '✓ ' : ''}${l}</div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+// ── Views ─────────────────────────────────────────────
+const VIEWS = {
+
+  welcome() {
+    const hasKey = !!S.apiKey;
+    return `
+      <div class="hero fade-in">
+        <div class="hero-icon">📰</div>
+        <h2 class="hero-title">Current Affairs Generator</h2>
+        <p class="text-muted mb-4" style="font-size:0.95rem">
+          Generate discussion topics &amp; talking points for your group meeting.
+        </p>
+        ${!hasKey ? `
+          <div class="api-notice mb-4 text-start">
+            <strong>API Key Required</strong> — click <strong>⚙ Settings</strong> (top right) to add your Anthropic API key.
+          </div>
+        ` : ''}
+        <div class="d-flex flex-column align-items-center gap-3">
+          <button class="btn btn-primary btn-lg px-5 py-2" onclick="go('category')" ${!hasKey ? 'disabled' : ''}>
+            Start New Session
+          </button>
+          ${S.saved.length > 0 ? `
+            <button class="saved-chip" onclick="go('saved')">
+              📋 ${S.saved.length} saved topic${S.saved.length !== 1 ? 's' : ''} — View &amp; Export
+            </button>
+          ` : `<div class="text-muted small">No saved topics yet</div>`}
+        </div>
+      </div>
+    `;
+  },
+
+  category() {
+    return `
+      <div class="fade-in">
+        ${wizardSteps(1)}
+        <h5 class="fw-bold text-navy mb-1">Select a category</h5>
+        <p class="text-muted small mb-4">What type of news would you like to discuss?</p>
+        <div class="cat-grid mb-4">
+          ${CATS.map(c => `
+            <div class="cat-card" onclick="selectCat('${c.id}')" style="border-color:#e2e8f0">
+              <span class="cat-icon-big">${c.icon}</span>
+              <div class="cat-name" style="color:${c.color}">${c.label}</div>
+              <div class="cat-sub">${c.sub}</div>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn btn-outline-secondary btn-sm" onclick="go('welcome')">← Back</button>
+      </div>
+    `;
+  },
+
+  count() {
+    const cat = CATS.find(c => c.id === S.category);
+    return `
+      <div class="fade-in">
+        ${wizardSteps(2)}
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span style="font-size:1.6rem">${cat.icon}</span>
+          <h5 class="fw-bold text-navy mb-0">${cat.label}</h5>
+        </div>
+        <p class="text-muted small mb-4">How many topics would you like to generate?</p>
+        <div class="d-flex gap-3 flex-wrap mb-4">
+          ${[3,4,5,6,7,8].map(n => `
+            <button class="count-ring ${S.count === n ? 'sel' : ''}" onclick="setCount(${n})">${n}</button>
+          `).join('')}
+        </div>
+        <p class="text-muted small mb-4">
+          Will generate <strong>${S.count}</strong> ${cat.label.toLowerCase()} topic${S.count !== 1 ? 's' : ''}
+        </p>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary btn-sm" onclick="go('category')">← Back</button>
+          <button class="btn btn-primary px-4" onclick="startGenerate()">Generate →</button>
+        </div>
+      </div>
+    `;
+  },
+
+  generating() {
+    const cat = CATS.find(c => c.id === S.category);
+    if (S.error) {
+      return `
+        <div class="gen-screen fade-in">
+          <div class="err-box mb-4 text-start" style="max-width:420px">${esc(S.error)}</div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" onclick="startGenerate()">Try Again</button>
+            <button class="btn btn-outline-secondary" onclick="go('count')">← Back</button>
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="gen-screen fade-in">
+        <div class="spinner-ring"></div>
+        <h6 class="fw-semibold text-secondary">Generating topics...</h6>
+        <p class="text-muted small">${cat.icon} ${S.count} ${cat.label} topic${S.count !== 1 ? 's' : ''}</p>
+      </div>
+    `;
+  },
+
+  review() {
+    const cat  = CATS.find(c => c.id === S.category);
+    const nSaved = S.topics.filter(t => t._saved).length;
+    return `
+      <div class="fade-in">
+        ${wizardSteps(3)}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="badge rounded-pill px-3 py-2" style="background:${cat.bg}; color:${cat.color}; font-size:0.82rem">
+            ${cat.icon} ${cat.label} &nbsp;·&nbsp; ${S.topics.length} topics
+          </span>
+          <span class="text-muted small">${nSaved} marked to save</span>
+        </div>
+
+        ${S.topics.map((t, i) => topicCard(t, i)).join('')}
+
+        <div class="card-box mt-2 d-flex gap-2 align-items-center">
+          <button class="btn btn-success flex-fill fw-semibold" onclick="finishSession()">
+            ✓ Save ${nSaved} topic${nSaved !== 1 ? 's' : ''} &amp; finish
+          </button>
+          <button class="btn btn-outline-secondary" onclick="go('welcome')">Cancel</button>
+        </div>
+      </div>
+    `;
+  },
+
+  done() {
+    const n = S._lastSaved || 0;
+    return `
+      <div class="hero fade-in">
+        <div class="hero-icon">✅</div>
+        <h3 class="fw-bold text-navy">Session Complete</h3>
+        <p class="text-muted mb-4">
+          ${n} topic${n !== 1 ? 's' : ''} saved.
+          ${S.saved.length > 0 ? `${S.saved.length} total in your collection.` : ''}
+        </p>
+        <div class="d-flex flex-column align-items-center gap-3">
+          <button class="btn btn-primary btn-lg px-5" onclick="go('category')">
+            Generate More Topics
+          </button>
+          ${S.saved.length > 0 ? `
+            <button class="saved-chip" onclick="go('saved')">
+              📋 ${S.saved.length} saved topics — View &amp; Export
+            </button>
+          ` : ''}
+          <button class="btn btn-link text-muted btn-sm" onclick="go('welcome')">Home</button>
+        </div>
+      </div>
+    `;
+  },
+
+  saved() {
+    if (S.saved.length === 0) {
+      return `
+        <div class="text-center py-5 fade-in">
+          <div style="font-size:3rem">📭</div>
+          <p class="text-muted mt-2">No saved topics yet.</p>
+          <button class="btn btn-primary" onclick="go('category')">Generate Topics</button>
+        </div>
+      `;
+    }
+    return `
+      <div class="fade-in">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-navy mb-0">Saved Topics (${S.saved.length})</h5>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-danger" onclick="clearAll()">Clear All</button>
+            <button class="btn btn-sm btn-primary" onclick="exportToWord()">⬇ Export Word</button>
+          </div>
+        </div>
+        ${S.saved.map((t, i) => savedRow(t, i)).join('')}
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-secondary btn-sm" onclick="go('welcome')">← Home</button>
+          <button class="btn btn-primary btn-sm" onclick="go('category')">Generate More</button>
+        </div>
+      </div>
+    `;
+  },
+};
+
+// ── Card renderers ─────────────────────────────────────
+function topicCard(t, i) {
+  const busy     = S.loadingIdx === i;
+  const busySum  = busy && S.loadingAction === 'summary';
+  const busyAdd  = busy && S.loadingAction === 'addTP';
+
+  return `
+    <div class="topic-card ${t._saved ? 'is-saved' : ''}">
+      ${t._saved ? `<div class="topic-saved-strip">✓ Saved</div>` : ''}
+
+      <div class="tc-head">
+        <div class="d-flex justify-content-between align-items-start gap-2">
+          <p class="topic-title">${esc(t.title)}</p>
+          <button class="btn-save-toggle flex-shrink-0 ${t._saved ? 'on' : ''}" onclick="toggleSave(${i})">
+            ${t._saved ? '★ Saved' : '☆ Save'}
+          </button>
+        </div>
+      </div>
+
+      <div class="tc-body">
+        <!-- Summary -->
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <div class="section-label">Summary</div>
+            <button class="act-link" onclick="rewriteSummary(${i})" ${busySum ? 'disabled' : ''}>
+              ${busySum ? '⟳ Rewriting...' : '↺ Rewrite'}
+            </button>
+          </div>
+          <p class="topic-desc${busySum ? ' opacity-50' : ''}">${esc(t.description)}</p>
+        </div>
+
+        <!-- Talking points -->
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <div class="section-label">Talking Points</div>
+            <button class="act-link" onclick="addTP(${i})" ${busyAdd ? 'disabled' : ''}>
+              ${busyAdd ? '⟳ Adding...' : '+ Add Point'}
+            </button>
+          </div>
+          ${t.talkingPoints.length === 0 ? `<p class="text-muted small fst-italic">No talking points.</p>` : ''}
+          ${t.talkingPoints.map((p, pi) => `
+            <div class="tp-row">
+              <span class="tp-n">${pi + 1}.</span>
+              <span class="tp-t">${esc(p)}</span>
+              <button class="tp-x" onclick="deleteTP(${i},${pi})" title="Delete this point">✕</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function savedRow(t, i) {
+  const cat = CATS.find(c => c.id === t._category) || CATS[0];
+  return `
+    <div class="saved-row">
+      <div class="d-flex justify-content-between align-items-start gap-2">
+        <div class="flex-grow-1">
+          <span class="cat-pill" style="background:${cat.bg}; color:${cat.color}">${cat.icon} ${cat.label}</span>
+          <div class="fw-semibold text-navy" style="font-size:0.93rem">${esc(t.title)}</div>
+          <div class="text-muted small mt-1">${esc(t.description)}</div>
+          ${t.talkingPoints.length > 0 ? `
+            <ol class="mt-2 mb-0 ps-3" style="font-size:0.82rem; color:#4a5568">
+              ${t.talkingPoints.map(p => `<li>${esc(p)}</li>`).join('')}
+            </ol>
+          ` : ''}
+        </div>
+        <button class="btn btn-sm btn-outline-danger flex-shrink-0 mt-1" onclick="removeSaved(${i})">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+// ── Navigation ─────────────────────────────────────────
+function selectCat(id) {
+  S.category = id;
+  go('count');
+}
+
+function setCount(n) {
+  S.count = n;
+  render();
+}
+
+// ── Generation ─────────────────────────────────────────
+async function startGenerate() {
+  S.error = null;
+  go('generating');
+
+  const cat = CATS.find(c => c.id === S.category);
+  const today = new Date().toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
+
+  const prompt = `You are generating current affairs discussion topics for an Australian discussion group meeting in ${today}.
+
+Generate exactly ${S.count} topics covering: ${cat.prompt}.
+
+Return ONLY a valid JSON array with no other text, markdown, or explanation:
+[
+  {
+    "title": "Clear headline (max 12 words)",
+    "description": "2–3 sentences summarising the issue, its significance, and current context.",
+    "talkingPoints": [
+      "First discussion question or angle",
+      "Second perspective or question",
+      "Third angle",
+      "Fourth discussion point"
+    ]
+  }
+]
+
+Rules:
+- Topics must be substantive and genuinely discussion-worthy
+- Talking points should offer different angles and encourage debate
+- Australian spelling throughout
+- Each topic must be clearly distinct
+- Return valid JSON only, no markdown fences`;
+
+  try {
+    const topics = await callClaude(prompt, true);
+    topics.forEach(t => { t._saved = false; t._category = S.category; });
+    S.topics = topics;
+    S.error = null;
+    go('review');
+  } catch(e) {
+    S.error = `Could not generate topics: ${e.message}`;
+    render();
+  }
+}
+
+// ── Topic actions ──────────────────────────────────────
+function toggleSave(idx) {
+  S.topics[idx]._saved = !S.topics[idx]._saved;
+  render();
+}
+
+function deleteTP(topicIdx, ptIdx) {
+  S.topics[topicIdx].talkingPoints.splice(ptIdx, 1);
+  render();
+}
+
+async function rewriteSummary(idx) {
+  S.loadingIdx = idx;
+  S.loadingAction = 'summary';
+  render();
+
+  const t = S.topics[idx];
+  const prompt = `Rewrite the following news summary for the topic "${t.title}". Make it clear and engaging for a discussion group. Return only the new summary (2–3 sentences), no other text.
+
+Current summary: ${t.description}`;
+
+  try {
+    const text = await callClaude(prompt, false);
+    S.topics[idx].description = text.trim();
+  } catch(e) { /* keep original on failure */ }
+  finally {
+    S.loadingIdx = null;
+    S.loadingAction = null;
+    render();
+  }
+}
+
+async function addTP(idx) {
+  S.loadingIdx = idx;
+  S.loadingAction = 'addTP';
+  render();
+
+  const t = S.topics[idx];
+  const existing = t.talkingPoints.map((p, i) => `${i + 1}. ${p}`).join('\n');
+  const prompt = `For the current affairs topic "${t.title}", generate one additional discussion talking point that is different from the existing ones.
+
+Existing points:
+${existing}
+
+Return only the new talking point (one sentence, no numbering), no other text.`;
+
+  try {
+    const text = await callClaude(prompt, false);
+    S.topics[idx].talkingPoints.push(text.trim());
+  } catch(e) { /* keep original on failure */ }
+  finally {
+    S.loadingIdx = null;
+    S.loadingAction = null;
+    render();
+  }
+}
+
+function finishSession() {
+  const toSave = S.topics.filter(t => t._saved);
+  S._lastSaved = toSave.length;
+  const date = new Date().toISOString().slice(0, 10);
+  toSave.forEach(t => { t._date = date; });
+  S.saved.push(...toSave);
+  persistSaved();
+  go('done');
+}
+
+function removeSaved(idx) {
+  S.saved.splice(idx, 1);
+  persistSaved();
+  render();
+}
+
+function clearAll() {
+  if (!confirm(`Delete all ${S.saved.length} saved topics?`)) return;
+  S.saved = [];
+  persistSaved();
+  render();
+}
+
+// ── Claude API ─────────────────────────────────────────
+async function callClaude(prompt, parseJson) {
+  if (!S.apiKey) throw new Error('No API key set. Click ⚙ Settings to add your Anthropic API key.');
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': S.apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: S.model,
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || `API error ${res.status}`);
+  }
+
+  const data = await res.json();
+  const text = data.content[0].text;
+
+  if (!parseJson) return text;
+
+  // Strip any markdown fences and extract the JSON array
+  const match = text.match(/\[[\s\S]*\]/);
+  if (!match) throw new Error('Unexpected response format. Please try again.');
+  return JSON.parse(match[0]);
+}
+
+// ── Settings ───────────────────────────────────────────
+function showSettings() {
+  document.getElementById('apiKeyInput').value = S.apiKey;
+  document.getElementById('modelSelect').value = S.model;
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('settingsModal')).show();
+}
+
+function saveSettings() {
+  S.apiKey = document.getElementById('apiKeyInput').value.trim();
+  S.model  = document.getElementById('modelSelect').value;
+  localStorage.setItem('cag_key',   S.apiKey);
+  localStorage.setItem('cag_model', S.model);
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('settingsModal')).hide();
+  render();
+}
+
+// ── Export to Word ─────────────────────────────────────
+async function exportToWord() {
+  if (typeof docx === 'undefined') {
+    alert('Word export library not loaded. Check your internet connection and refresh.');
+    return;
+  }
+
+  const { Document, Paragraph, TextRun, AlignmentType, Packer, BorderStyle, UnderlineType } = docx;
+  const T = n => n * 20; // pt to twip
+
+  const dateStr = new Date().toLocaleDateString('en-AU', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  });
+
+  const children = [];
+
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { after: T(4) },
+    children: [new TextRun({ text: 'Current Affairs Group', bold: true, size: T(22), color: '1e3a5f' })],
+  }));
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: { after: T(14) },
+    children: [new TextRun({ text: dateStr, size: T(11), color: '718096' })],
+  }));
+  children.push(new Paragraph({
+    spacing: { after: T(14) },
+    border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '2b6cb0', space: 4 } },
+  }));
+
+  // Group by category in order
+  CATS.forEach(cat => {
+    const topics = S.saved.filter(t => t._category === cat.id);
+    if (topics.length === 0) return;
+
+    children.push(new Paragraph({
+      spacing: { before: T(16), after: T(6) },
+      children: [new TextRun({ text: `${cat.label}`, bold: true, size: T(16), color: '1e3a5f' })],
+    }));
+    children.push(new Paragraph({
+      spacing: { after: T(10) },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 2, color: 'e2e8f0', space: 2 } },
+    }));
+
+    topics.forEach((t, i) => {
+      if (i > 0) {
+        children.push(new Paragraph({
+          spacing: { before: T(10), after: 0 },
+          border: { bottom: { style: BorderStyle.DASHED, size: 1, color: 'e2e8f0', space: 2 } },
+        }));
+      }
+
+      children.push(new Paragraph({
+        spacing: { before: T(10), after: T(4) },
+        children: [new TextRun({ text: t.title, bold: true, size: T(13) })],
+      }));
+
+      if (t.description) {
+        children.push(new Paragraph({
+          spacing: { after: T(8) },
+          children: [new TextRun({ text: t.description, size: T(11), italics: true, color: '4a5568' })],
+        }));
+      }
+
+      children.push(new Paragraph({
+        spacing: { after: T(4) },
+        children: [new TextRun({
+          text: 'Talking Points',
+          bold: true, size: T(11),
+          underline: { type: UnderlineType.SINGLE },
+        })],
+      }));
+
+      (t.talkingPoints || []).forEach((p, pi) => {
+        children.push(new Paragraph({
+          spacing: { after: T(5) },
+          indent: { left: T(14) },
+          children: [
+            new TextRun({ text: `${pi + 1}.  `, bold: true, size: T(11) }),
+            new TextRun({ text: p, size: T(11) }),
+          ],
+        }));
+      });
+    });
+  });
+
+  children.push(new Paragraph({ spacing: { before: T(18) } }));
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    children: [new TextRun({ text: `Generated ${new Date().toLocaleDateString('en-AU')}`, size: T(9), color: 'aaaaaa' })],
+  }));
+
+  const doc = new Document({
+    sections: [{
+      properties: { page: { margin: { top: 720, bottom: 720, left: 900, right: 900 } } },
+      children,
+    }],
+  });
+
+  const blob = await Packer.toBlob(doc);
+  saveAs(blob, `Current_Affairs_Group_${new Date().toISOString().slice(0,10)}.docx`);
+}
+
+// ── Util ──────────────────────────────────────────────
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ── Init ─────────────────────────────────────────────
+loadSaved();
+render();
+
+</script>
+</body>
+</html>

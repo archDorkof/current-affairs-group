@@ -133,7 +133,7 @@
     <div class="sub">Talking Points Generator</div>
   </div>
   <div class="d-flex align-items-center gap-3">
-    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.23</span>
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.24</span>
     <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -599,6 +599,10 @@ function savedRow(t, i) {
             <ol class="mt-2 mb-0 ps-3" style="font-size:0.82rem; color:#4a5568">
               ${t.talkingPoints.map(p => `<li>${esc(p)}</li>`).join('')}
             </ol>` : ''}
+          ${t.sources?.length ? `
+            <div class="mt-2">
+              ${t.sources.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener" class="d-inline-block me-2 mb-1" style="font-size:0.75rem; color:var(--blue)">${esc(s.label)}</a>`).join('')}
+            </div>` : ''}
         </div>
         <button class="btn btn-sm btn-outline-danger flex-shrink-0 mt-1" onclick="removeSaved(${i})">✕</button>
       </div>

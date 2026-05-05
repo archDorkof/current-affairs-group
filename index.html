@@ -133,7 +133,7 @@
     <div class="sub">Talking Points Generator</div>
   </div>
   <div class="d-flex align-items-center gap-3">
-    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.16</span>
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.17</span>
     <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -175,7 +175,13 @@ const CATS = [
     color: '#1a56db', bg: '#ebf5fb',
     sub: 'Global news & world affairs',
     prompt: 'major international current affairs — global politics, international relations, climate and environment, world economic trends, and significant events that affect everyday Australians',
-    rssUrl: 'https://feeds.bbci.co.uk/news/world/rss.xml',
+    rssUrls: [
+      { url: 'https://feeds.bbci.co.uk/news/world/rss.xml',         source: 'BBC'        },
+      { url: 'https://www.abc.net.au/news/feed/51120/rss.xml',       source: 'ABC'        },
+      { url: 'https://www.smh.com.au/rss/world.xml',                 source: 'SMH'        },
+      { url: 'https://www.theguardian.com/world/rss',                source: 'Guardian'   },
+      { url: 'https://www.aljazeera.com/xml/rss/all.xml',            source: 'Al Jazeera' },
+    ],
   },
   {
     id: 'national', label: 'National', icon: '🇦🇺',
@@ -607,10 +613,10 @@ async function autoGenerate() {
       const cat = getCat(catId);
 
       let headlineContext = '';
-      if (cat.rssUrl) {
+      if (cat.rssUrls || cat.rssUrl) {
         S.genMsg = `Fetching current ${cat.label} headlines...`;
         render();
-        const headlines = await fetchFeed(cat.rssUrl, cat.label);
+        const headlines = await fetchCategoryHeadlines(cat);
         if (headlines.length > 0) {
           const list = headlines.slice(0, 15).map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}${h.link ? ` [${h.link}]` : ''}`).join('\n');
           headlineContext = `\n\nBase your topics on these current headlines (fetched ${today}):\n${list}\n\nOnly use topics drawn from this list. For each topic include at least 2 source URLs from the headlines above.`;
@@ -657,13 +663,13 @@ async function startGenerate() {
   const today = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
 
   let headlineContext = '';
-  if (cat.rssUrl) {
+  if (cat.rssUrls || cat.rssUrl) {
     S.genMsg = 'Fetching current headlines...';
     render();
-    const headlines = await fetchFeed(cat.rssUrl, cat.label);
+    const headlines = await fetchCategoryHeadlines(cat);
     if (headlines.length > 0) {
-      const list = headlines.slice(0, 15).map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}`).join('\n');
-      headlineContext = `\n\nBase your topics on these current headlines (fetched ${today}):\n${list}\n\nOnly use topics drawn from this list.`;
+      const list = headlines.slice(0, 15).map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}${h.link ? ` [${h.link}]` : ''}`).join('\n');
+      headlineContext = `\n\nBase your topics on these current headlines (fetched ${today}):\n${list}\n\nOnly use topics drawn from this list. For each topic include at least 2 source URLs from the headlines above.`;
     }
   }
 
@@ -754,6 +760,19 @@ function parseRssItems(xmlText, source) {
     const link = (item.querySelector('link')?.textContent || '').trim();
     return { title, date: dateStr, ts, desc, source, link };
   }).filter(h => h.title);
+}
+
+async function fetchCategoryHeadlines(cat) {
+  const feeds = cat.rssUrls || (cat.rssUrl ? [{ url: cat.rssUrl, source: cat.label }] : []);
+  if (feeds.length === 0) return [];
+  const results = await Promise.allSettled(feeds.map(f => fetchFeed(f.url, f.source)));
+  const seen = new Set();
+  return results
+    .filter(r => r.status === 'fulfilled')
+    .flatMap(r => r.value)
+    .filter(h => { if (seen.has(h.title)) return false; seen.add(h.title); return true; })
+    .sort((a, b) => b.ts - a.ts)
+    .slice(0, 20);
 }
 
 async function fetchFeed(url, source) {

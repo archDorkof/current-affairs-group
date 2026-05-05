@@ -133,7 +133,7 @@
     <div class="sub">Talking Points Generator</div>
   </div>
   <div class="d-flex align-items-center gap-3">
-    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.14</span>
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.15</span>
     <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -175,6 +175,7 @@ const CATS = [
     color: '#1a56db', bg: '#ebf5fb',
     sub: 'Global news & world affairs',
     prompt: 'major international current affairs — global politics, international relations, climate and environment, world economic trends, and significant events that affect everyday Australians',
+    rssUrl: 'https://feeds.bbci.co.uk/news/world/rss.xml',
   },
   {
     id: 'national', label: 'National', icon: '🇦🇺',
@@ -587,7 +588,7 @@ async function autoGenerate() {
   S.genMsg = 'Auto generating 8 topics across all categories...';
   go('generating');
 
-  const today = new Date().toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
+  const today = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
   const plan = [
     { catId: 'international', count: 3 },
     { catId: 'national',      count: 2 },
@@ -599,9 +600,24 @@ async function autoGenerate() {
     const allTopics = [];
     for (const { catId, count } of plan) {
       const cat = getCat(catId);
-      const prompt = `You are preparing current affairs discussion topics for a U3A group in Mudgee, NSW (${today}). Members are in their 70s and meet weekly online. They enjoy thoughtful, respectful discussion and hearing different perspectives. Use plain, everyday language — no jargon or technical terms. Keep topics calm and balanced; avoid sensationalism or highly divisive framing. Talking points should invite gentle debate rather than provoke. Focus only on news, events, or community issues from the past 7 days.
 
-Generate exactly ${count} topics covering: ${cat.prompt}.
+      let headlineContext = '';
+      if (cat.rssUrl) {
+        S.genMsg = `Fetching current ${cat.label} headlines...`;
+        render();
+        const headlines = await fetchFeed(cat.rssUrl, cat.label);
+        if (headlines.length > 0) {
+          const list = headlines.slice(0, 15).map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}`).join('\n');
+          headlineContext = `\n\nBase your topics on these current headlines (fetched ${today}):\n${list}\n\nOnly use topics drawn from this list.`;
+        }
+      }
+
+      S.genMsg = `Generating ${cat.label} topics...`;
+      render();
+
+      const prompt = `You are preparing current affairs discussion topics for a U3A group in Mudgee, NSW. Members are in their 70s and meet weekly online. They enjoy thoughtful, respectful discussion and hearing different perspectives. Use plain, everyday language — no jargon or technical terms. Keep topics calm and balanced; avoid sensationalism or highly divisive framing. Talking points should invite gentle debate rather than provoke.
+
+Generate exactly ${count} topics covering: ${cat.prompt}.${headlineContext}
 
 Return ONLY a valid JSON array, no other text:
 [
@@ -632,11 +648,22 @@ async function startGenerate() {
   go('generating');
 
   const cat   = getCat(S.category);
-  const today = new Date().toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
+  const today = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  const prompt = `You are preparing current affairs discussion topics for a U3A group in Mudgee, NSW (${today}). Members are in their 70s and meet weekly online. They enjoy thoughtful, respectful discussion and hearing different perspectives. Use plain, everyday language — no jargon or technical terms. Keep topics calm and balanced; avoid sensationalism or highly divisive framing. Talking points should invite gentle debate rather than provoke. Focus only on news, events, or community issues from the past 7 days.
+  let headlineContext = '';
+  if (cat.rssUrl) {
+    S.genMsg = 'Fetching current headlines...';
+    render();
+    const headlines = await fetchFeed(cat.rssUrl, cat.label);
+    if (headlines.length > 0) {
+      const list = headlines.slice(0, 15).map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}`).join('\n');
+      headlineContext = `\n\nBase your topics on these current headlines (fetched ${today}):\n${list}\n\nOnly use topics drawn from this list.`;
+    }
+  }
 
-Generate exactly ${S.count} topics covering: ${cat.prompt}.
+  const prompt = `You are preparing current affairs discussion topics for a U3A group in Mudgee, NSW. Members are in their 70s and meet weekly online. They enjoy thoughtful, respectful discussion and hearing different perspectives. Use plain, everyday language — no jargon or technical terms. Keep topics calm and balanced; avoid sensationalism or highly divisive framing. Talking points should invite gentle debate rather than provoke.
+
+Generate exactly ${S.count} topics covering: ${cat.prompt}.${headlineContext}
 
 Return ONLY a valid JSON array, no other text:
 [

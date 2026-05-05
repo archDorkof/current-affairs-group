@@ -133,7 +133,7 @@
     <div class="sub">Talking Points Generator</div>
   </div>
   <div class="d-flex align-items-center gap-3">
-    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.11</span>
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.12</span>
     <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -662,10 +662,10 @@ Rules: substantive topics, different angles in talking points, Australian spelli
 
 // ── Recent News ────────────────────────────────────────
 const RSS_FEEDS = [
-  { url: 'https://feeds.bbci.co.uk/news/world/rss.xml',                   source: 'BBC'    },
-  { url: 'https://www.abc.net.au/news/feed/2942460/rss.xml',              source: 'ABC'    },
-  { url: 'https://www.smh.com.au/rss/feed.xml',                           source: 'SMH'    },
-  { url: 'https://news.google.com/rss?hl=en-AU&gl=AU&ceid=AU:en',         source: 'Google' },
+  { url: 'https://feeds.bbci.co.uk/news/world/rss.xml',              source: 'BBC'    },
+  { url: 'https://www.abc.net.au/news/feed/51120/rss.xml',            source: 'ABC'    },
+  { url: 'https://www.smh.com.au/rss/feed.xml',                      source: 'SMH'    },
+  { url: 'https://news.google.com/rss?hl=en-AU&gl=AU&ceid=AU:en',    source: 'Google' },
 ];
 
 async function goRecentNews() {
@@ -722,48 +722,16 @@ function parseRssItems(xmlText, source) {
 }
 
 async function fetchFeed(url, source) {
-  // Method 1: rss2json.com JSON proxy (handles CORS for all feeds)
+  // Route through Cloudflare Worker — no CORS issues, works for all feeds
   try {
-    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&count=20`;
-    const res = await fetch(apiUrl, { signal: AbortSignal.timeout(8000) });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.status === 'ok' && data.items?.length) {
-        return data.items.map(item => {
-          const pubDate = item.pubDate ? new Date(item.pubDate) : null;
-          const ts = pubDate && !isNaN(pubDate) ? pubDate.getTime() : Date.now();
-          const dateStr = pubDate && !isNaN(pubDate)
-            ? pubDate.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })
-            : '';
-          const desc = (item.description || '')
-            .replace(/<[^>]+>/g, '').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim().slice(0, 180);
-          return { title: (item.title || '').trim(), date: dateStr, ts, desc, source };
-        }).filter(h => h.title);
-      }
-    }
-  } catch(_) {}
-
-  // Method 2: fetch XML directly (works for CORS-enabled feeds like BBC)
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    const proxyUrl = `${PROXY_URL.replace('/api/claude', '/api/rss')}?url=${encodeURIComponent(url)}`;
+    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
     if (res.ok) {
       const text = await res.text();
       const items = parseRssItems(text, source);
       if (items.length) return items;
     }
   } catch(_) {}
-
-  // Method 3: corsproxy.io fallback
-  try {
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-    if (res.ok) {
-      const text = await res.text();
-      const items = parseRssItems(text, source);
-      if (items.length) return items;
-    }
-  } catch(_) {}
-
   return [];
 }
 

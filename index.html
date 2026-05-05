@@ -91,15 +91,15 @@
     .topic-saved-strip { background: #f0fff4; padding: 0.3rem 1.1rem; font-size: 0.75rem; font-weight: 600; color: #276749; border-bottom: 1px solid #c6f6d5; }
     .tc-head { padding: 0.9rem 1.1rem 0.7rem; border-bottom: 1px solid #f0f4f8; }
     .tc-body { padding: 0.9rem 1.1rem; }
-    .topic-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin: 0; line-height: 1.4; }
+    .topic-title { font-size: 1.125rem; font-weight: 700; color: var(--navy); margin: 0; line-height: 1.4; }
     .section-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #a0aec0; margin-bottom: 0.35rem; }
-    .topic-desc { font-size: 0.875rem; color: #4a5568; line-height: 1.6; margin: 0; }
+    .topic-desc { font-size: 1rem; color: #4a5568; line-height: 1.6; margin: 0; }
 
     /* Talking point rows */
     .tp-row { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.45rem 0; border-bottom: 1px solid #f7fafc; }
     .tp-row:last-child { border-bottom: none; }
     .tp-n { font-size: 0.75rem; font-weight: 700; color: #718096; flex-shrink: 0; padding-top: 0.15rem; min-width: 1.2rem; }
-    .tp-t { flex: 1; font-size: 0.875rem; color: #2d3748; line-height: 1.5; }
+    .tp-t { flex: 1; font-size: 1rem; color: #2d3748; line-height: 1.5; }
     .tp-x { background: none; border: none; color: #fc8181; font-size: 1rem; line-height: 1; cursor: pointer; flex-shrink: 0; padding: 0 0.15rem; opacity: 0.65; }
     .tp-x:hover { opacity: 1; color: #e53e3e; }
 
@@ -855,17 +855,12 @@ function clearAll() {
 }
 
 // ── Claude API ─────────────────────────────────────────
-async function callClaude(prompt, parseJson) {
-  if (!S.apiKey) throw new Error('No API key set. Click ⚙ Settings to add your Anthropic API key.');
+const PROXY_URL = 'https://claude-proxy.mawt11.workers.dev/api/claude';
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+async function callClaude(prompt, parseJson) {
+  const res = await fetch(PROXY_URL, {
     method: 'POST',
-    headers: {
-      'x-api-key': S.apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       model: S.model,
       max_tokens: 4096,

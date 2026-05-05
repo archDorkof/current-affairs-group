@@ -133,7 +133,7 @@
     <div class="sub">Talking Points Generator</div>
   </div>
   <div class="d-flex align-items-center gap-3">
-    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.18</span>
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.19</span>
     <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -182,18 +182,31 @@ const CATS = [
       { url: 'https://www.theguardian.com/world/rss',                source: 'Guardian'   },
       { url: 'https://www.aljazeera.com/xml/rss/all.xml',            source: 'Al Jazeera' },
     ],
+    topicFilter: 'Every topic MUST be an international event — exclude anything solely about Australian domestic politics, Australian law, the Australian economy, or events that occurred only within Australia. Prefer stories confirmed by BBC, Guardian, or Al Jazeera as internationally significant.',
   },
   {
     id: 'national', label: 'National', icon: '🇦🇺',
     color: '#057a55', bg: '#f0fff4',
     sub: 'Australian federal politics & news',
     prompt: 'Australian national current affairs — federal government decisions, cost of living, healthcare and aged care, social issues, and major news affecting ordinary Australians',
+    rssUrls: [
+      { url: 'https://www.abc.net.au/news/feed/51120/rss.xml',       source: 'ABC'      },
+      { url: 'https://www.smh.com.au/rss/national.xml',              source: 'SMH'      },
+      { url: 'https://www.theguardian.com/australia-news/rss',       source: 'Guardian' },
+    ],
+    topicFilter: 'Every topic must be about Australian national or federal issues — federal government policy, national economy, federal legislation, or major stories affecting all Australians. Exclude state-specific news, local news, and international events.',
   },
   {
     id: 'nsw', label: 'NSW', icon: '🏛️',
     color: '#6c2bd9', bg: '#faf5ff',
     sub: 'NSW state government & issues',
     prompt: 'NSW state current affairs — state government decisions, cost of living pressures, regional services, health and transport infrastructure, and significant news affecting people across NSW',
+    rssUrls: [
+      { url: 'https://www.smh.com.au/rss/nsw.xml',                                                       source: 'SMH'         },
+      { url: 'https://www.theguardian.com/australia-news/new-south-wales/rss',                            source: 'Guardian'    },
+      { url: 'https://news.google.com/rss/search?q=NSW+government&hl=en-AU&gl=AU&ceid=AU:en',             source: 'Google News' },
+    ],
+    topicFilter: 'Every topic must be specifically about New South Wales — NSW state government decisions, NSW infrastructure, services, or issues directly affecting NSW residents. Exclude federal-only news, news from other states, and international events.',
   },
   {
     id: 'local', label: 'Local', icon: '📍',
@@ -619,7 +632,8 @@ async function autoGenerate() {
         const headlines = await fetchCategoryHeadlines(cat);
         if (headlines.length > 0) {
           const list = headlines.slice(0, 15).map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}${h.link ? ` [${h.link}]` : ''}`).join('\n');
-          headlineContext = `\n\nBase your topics on these current headlines (fetched ${today}):\n${list}\n\nRules for selecting topics:\n- Only use topics drawn from this list\n- Every topic MUST be an international event — exclude anything that is solely about Australian domestic politics, Australian law, Australian economy, or events that occurred only within Australia\n- Prefer stories covered by BBC, Guardian, or Al Jazeera as confirmation they are internationally significant\n- For each topic include at least 2 source URLs from the headlines above`;
+          const filter = cat.topicFilter ? `\n- ${cat.topicFilter}` : '';
+          headlineContext = `\n\nBase your topics on these current headlines (fetched ${today}):\n${list}\n\nRules for selecting topics:\n- Only use topics drawn from this list${filter}\n- For each topic include at least 2 source URLs from the headlines above`;
         }
       }
 

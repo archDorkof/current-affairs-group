@@ -132,7 +132,10 @@
     <h1 onclick="go('welcome')">Current Affairs Group</h1>
     <div class="sub">Talking Points Generator</div>
   </div>
-  <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
+  <div class="d-flex align-items-center gap-3">
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.10</span>
+    <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
+  </div>
 </header>
 
 <main class="container py-4" id="app" style="max-width:680px"></main>
@@ -146,11 +149,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Anthropic API Key</label>
-          <input type="password" id="apiKeyInput" class="form-control" placeholder="sk-ant-...">
-          <div class="form-text">Saved locally in your browser only. Never transmitted except to Anthropic's API.</div>
-        </div>
         <div>
           <label class="form-label fw-semibold">Model</label>
           <select id="modelSelect" class="form-select">
@@ -262,15 +260,13 @@ function wizardSteps(active, labels) {
 const VIEWS = {
 
   welcome() {
-    const hasKey = !!S.apiKey;
     return `
       <div class="hero fade-in">
         <div class="hero-icon">📰</div>
         <h2 class="hero-title">Current Affairs Generator</h2>
         <p class="text-muted mb-4" style="font-size:0.95rem">Generate discussion topics &amp; talking points for your group meeting.</p>
-        ${!hasKey ? `<div class="api-notice mb-4 text-start"><strong>API Key Required</strong> — click <strong>⚙ Settings</strong> (top right) to add your Anthropic API key.</div>` : ''}
         <div class="d-flex flex-column align-items-center gap-3">
-          <button class="btn btn-primary btn-lg px-5 py-2" onclick="go('category')" ${!hasKey ? 'disabled' : ''}>
+          <button class="btn btn-primary btn-lg px-5 py-2" onclick="go('category')"
             Start New Session
           </button>
           ${S.saved.length > 0
@@ -884,14 +880,11 @@ async function callClaude(prompt, parseJson) {
 
 // ── Settings ───────────────────────────────────────────
 function showSettings() {
-  document.getElementById('apiKeyInput').value = S.apiKey;
   document.getElementById('modelSelect').value = S.model;
   bootstrap.Modal.getOrCreateInstance(document.getElementById('settingsModal')).show();
 }
 function saveSettings() {
-  S.apiKey = document.getElementById('apiKeyInput').value.trim();
-  S.model  = document.getElementById('modelSelect').value;
-  localStorage.setItem('cag_key',   S.apiKey);
+  S.model = document.getElementById('modelSelect').value;
   localStorage.setItem('cag_model', S.model);
   bootstrap.Modal.getOrCreateInstance(document.getElementById('settingsModal')).hide();
   render();

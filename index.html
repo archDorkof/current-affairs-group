@@ -133,7 +133,7 @@
     <div class="sub">Talking Points Generator</div>
   </div>
   <div class="d-flex align-items-center gap-3">
-    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.12</span>
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.13</span>
     <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -174,25 +174,25 @@ const CATS = [
     id: 'international', label: 'International', icon: '🌏',
     color: '#1a56db', bg: '#ebf5fb',
     sub: 'Global news & world affairs',
-    prompt: 'major international current affairs — global politics, international conflicts, climate agreements, world economic trends, and significant world events',
+    prompt: 'major international current affairs — global politics, international relations, climate and environment, world economic trends, and significant events that affect everyday Australians',
   },
   {
     id: 'national', label: 'National', icon: '🇦🇺',
     color: '#057a55', bg: '#f0fff4',
     sub: 'Australian federal politics & news',
-    prompt: 'Australian national current affairs — federal government policy, the Australian economy, national social issues, healthcare, and major Australian news events',
+    prompt: 'Australian national current affairs — federal government decisions, cost of living, healthcare and aged care, social issues, and major news affecting ordinary Australians',
   },
   {
     id: 'nsw', label: 'NSW', icon: '🏛️',
     color: '#6c2bd9', bg: '#faf5ff',
     sub: 'NSW state government & issues',
-    prompt: 'NSW state current affairs — NSW government policy, state budget and services, infrastructure projects, education, health, and significant NSW news',
+    prompt: 'NSW state current affairs — state government decisions, cost of living pressures, regional services, health and transport infrastructure, and significant news affecting people across NSW',
   },
   {
     id: 'local', label: 'Local', icon: '📍',
     color: '#b45309', bg: '#fffbeb',
     sub: 'Mudgee & Central West NSW',
-    prompt: 'local current affairs relevant to Mudgee and the Central West region of NSW — Mudgee Regional Council decisions, regional infrastructure and development, agriculture and wine industry, tourism, community issues, and events in the Mudgee, Orange, and Bathurst area',
+    prompt: 'local current affairs relevant to Mudgee and the Central West region of NSW — Mudgee Regional Council decisions, local services and community issues, agriculture, the wine industry, tourism, and developments in the Mudgee, Orange, and Bathurst area',
   },
 ];
 
@@ -599,7 +599,7 @@ async function autoGenerate() {
     const allTopics = [];
     for (const { catId, count } of plan) {
       const cat = getCat(catId);
-      const prompt = `You are generating current affairs discussion topics for an Australian discussion group meeting in ${today}.
+      const prompt = `You are preparing current affairs discussion topics for a U3A group in Mudgee, NSW (${today}). Members are in their 70s and meet weekly online. They enjoy thoughtful, respectful discussion and hearing different perspectives. Use plain, everyday language — no jargon or technical terms. Keep topics calm and balanced; avoid sensationalism or highly divisive framing. Talking points should invite gentle debate rather than provoke.
 
 Generate exactly ${count} topics covering: ${cat.prompt}.
 
@@ -607,12 +607,12 @@ Return ONLY a valid JSON array, no other text:
 [
   {
     "title": "Clear headline (max 12 words)",
-    "description": "2–3 sentences summarising the issue, its significance, and current context.",
-    "talkingPoints": ["First question or angle","Second perspective","Third angle","Fourth discussion point"]
+    "description": "2–3 sentences summarising the issue, its significance, and current context. Plain language.",
+    "talkingPoints": ["First discussion question","Second angle","Third perspective","Fourth point"]
   }
 ]
 
-Rules: substantive topics, different angles in talking points, Australian spelling, clearly distinct topics, valid JSON only.`;
+Rules: plain language, no jargon, calm and balanced framing, Australian spelling, clearly distinct topics, different angles in talking points, valid JSON only.`;
       const topics = await callClaude(prompt, true);
       topics.forEach(t => { t._saved = false; t._category = catId; });
       allTopics.push(...topics);
@@ -634,7 +634,7 @@ async function startGenerate() {
   const cat   = getCat(S.category);
   const today = new Date().toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
 
-  const prompt = `You are generating current affairs discussion topics for an Australian discussion group meeting in ${today}.
+  const prompt = `You are preparing current affairs discussion topics for a U3A group in Mudgee, NSW (${today}). Members are in their 70s and meet weekly online. They enjoy thoughtful, respectful discussion and hearing different perspectives. Use plain, everyday language — no jargon or technical terms. Keep topics calm and balanced; avoid sensationalism or highly divisive framing. Talking points should invite gentle debate rather than provoke.
 
 Generate exactly ${S.count} topics covering: ${cat.prompt}.
 
@@ -642,12 +642,12 @@ Return ONLY a valid JSON array, no other text:
 [
   {
     "title": "Clear headline (max 12 words)",
-    "description": "2–3 sentences summarising the issue, its significance, and current context.",
-    "talkingPoints": ["First question or angle","Second perspective","Third angle","Fourth discussion point"]
+    "description": "2–3 sentences summarising the issue, its significance, and current context. Plain language.",
+    "talkingPoints": ["First discussion question","Second angle","Third perspective","Fourth point"]
   }
 ]
 
-Rules: substantive topics, different angles in talking points, Australian spelling, clearly distinct topics, valid JSON only.`;
+Rules: plain language, no jargon, calm and balanced framing, Australian spelling, clearly distinct topics, different angles in talking points, valid JSON only.`;
 
   try {
     const topics = await callClaude(prompt, true);
@@ -748,7 +748,7 @@ async function generateFromHeadlines() {
 
   const list = selected.map((h, i) => `${i + 1}. ${h.title}${h.desc ? ` — ${h.desc}` : ''}`).join('\n');
 
-  const prompt = `You are generating structured current affairs discussion topics for an Australian group.
+  const prompt = `You are preparing current affairs discussion topics for a U3A group in Mudgee, NSW. Members are in their 70s and meet weekly online. They enjoy thoughtful, respectful discussion and hearing different perspectives. Use plain, everyday language — no jargon or technical terms. Keep topics calm and balanced; avoid sensationalism or highly divisive framing. Talking points should invite gentle debate rather than provoke.
 
 Based on these real news headlines, create one discussion topic per headline:
 ${list}
@@ -757,12 +757,12 @@ Return ONLY a valid JSON array, one object per headline, same order:
 [
   {
     "title": "The headline or a clear restatement (max 12 words)",
-    "description": "2–3 sentences summarising the story and its significance for an Australian audience.",
-    "talkingPoints": ["First discussion question","Second angle","Third perspective","Fourth discussion point"]
+    "description": "2–3 sentences summarising the story and its significance for an Australian audience. Plain language.",
+    "talkingPoints": ["First discussion question","Second angle","Third perspective","Fourth point"]
   }
 ]
 
-Rules: faithful to headlines, encourage debate, Australian spelling, valid JSON only.`;
+Rules: faithful to headlines, plain language, no jargon, calm and balanced framing, Australian spelling, valid JSON only.`;
 
   try {
     const topics = await callClaude(prompt, true);
@@ -794,7 +794,7 @@ async function generateCustomTopic() {
 
   const cat = getCat(catId);
 
-  const prompt = `You are generating a structured current affairs discussion topic for an Australian group.
+  const prompt = `You are preparing a current affairs discussion topic for a U3A group in Mudgee, NSW. Members are in their 70s and meet weekly online. They enjoy thoughtful, respectful discussion and hearing different perspectives. Use plain, everyday language — no jargon or technical terms. Keep the topic calm and balanced; avoid sensationalism or highly divisive framing. Talking points should invite gentle debate rather than provoke.
 
 Topic: ${title}
 Category: ${cat.label}${context ? `\n\nContext:\n${context}` : ''}
@@ -803,12 +803,12 @@ Return ONLY a valid JSON array with exactly one object:
 [
   {
     "title": "${title}",
-    "description": "2–3 sentences summarising the issue and its significance.",
-    "talkingPoints": ["First discussion question","Second angle","Third perspective","Fourth discussion point"]
+    "description": "2–3 sentences summarising the issue and its significance. Plain language.",
+    "talkingPoints": ["First discussion question","Second angle","Third perspective","Fourth point"]
   }
 ]
 
-Rules: use the exact title, encourage debate, Australian spelling, valid JSON only.`;
+Rules: use the exact title, plain language, no jargon, calm and balanced framing, Australian spelling, valid JSON only.`;
 
   try {
     const topics = await callClaude(prompt, true);

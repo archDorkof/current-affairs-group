@@ -133,7 +133,7 @@
     <div class="sub">Talking Points Generator</div>
   </div>
   <div class="d-flex align-items-center gap-3">
-    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.10</span>
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.11</span>
     <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -266,9 +266,9 @@ const VIEWS = {
         <h2 class="hero-title">Current Affairs Generator</h2>
         <p class="text-muted mb-4" style="font-size:0.95rem">Generate discussion topics &amp; talking points for your group meeting.</p>
         <div class="d-flex flex-column align-items-center gap-3">
-          <button class="btn btn-primary btn-lg px-5 py-2" onclick="go('category')"
-            Start New Session
-          </button>
+          <button class="btn btn-primary btn-lg px-5 py-2" onclick="autoGenerate()">⚡ Auto Generate</button>
+          <div class="text-muted small">3 International · 2 National · 2 State · 1 Local</div>
+          <button class="btn btn-outline-primary px-5 py-2" onclick="go('category')">Generate Topics</button>
           ${S.saved.length > 0
             ? `<button class="saved-chip" onclick="go('saved')">📋 ${S.saved.length} saved topic${S.saved.length !== 1 ? 's' : ''} — View &amp; Export</button>`
             : `<div class="text-muted small">No saved topics yet</div>`}
@@ -579,6 +579,51 @@ function savedRow(t, i) {
 // ── Navigation ─────────────────────────────────────────
 function selectCat(id) { S.category = id; go('count'); }
 function setCount(n)    { S.count = n; render(); }
+
+// ── Auto Generate (3 intl, 2 national, 2 nsw, 1 local) ─
+async function autoGenerate() {
+  S.error  = null;
+  S.topics = [];
+  S.genMsg = 'Auto generating 8 topics across all categories...';
+  go('generating');
+
+  const today = new Date().toLocaleDateString('en-AU', { month: 'long', year: 'numeric' });
+  const plan = [
+    { catId: 'international', count: 3 },
+    { catId: 'national',      count: 2 },
+    { catId: 'nsw',           count: 2 },
+    { catId: 'local',         count: 1 },
+  ];
+
+  try {
+    const allTopics = [];
+    for (const { catId, count } of plan) {
+      const cat = getCat(catId);
+      const prompt = `You are generating current affairs discussion topics for an Australian discussion group meeting in ${today}.
+
+Generate exactly ${count} topics covering: ${cat.prompt}.
+
+Return ONLY a valid JSON array, no other text:
+[
+  {
+    "title": "Clear headline (max 12 words)",
+    "description": "2–3 sentences summarising the issue, its significance, and current context.",
+    "talkingPoints": ["First question or angle","Second perspective","Third angle","Fourth discussion point"]
+  }
+]
+
+Rules: substantive topics, different angles in talking points, Australian spelling, clearly distinct topics, valid JSON only.`;
+      const topics = await callClaude(prompt, true);
+      topics.forEach(t => { t._saved = false; t._category = catId; });
+      allTopics.push(...topics);
+    }
+    S.topics = allTopics;
+    go('review');
+  } catch(e) {
+    S.error = `Could not auto generate: ${e.message}`;
+    render();
+  }
+}
 
 // ── AI: Generate by count ──────────────────────────────
 async function startGenerate() {

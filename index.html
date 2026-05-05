@@ -133,7 +133,7 @@
     <div class="sub">Talking Points Generator</div>
   </div>
   <div class="d-flex align-items-center gap-3">
-    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.22</span>
+    <span style="font-size:0.7rem;opacity:0.45;font-family:monospace">v1.23</span>
     <button class="btn btn-sm btn-outline-light" onclick="showSettings()">⚙ Settings</button>
   </div>
 </header>
@@ -997,27 +997,22 @@ function exportToWord() {
       body += '<p class="tp-label">Talking Points</p><ol>';
       (t.talkingPoints || []).forEach(p => { body += `<li>${esc(p)}</li>`; });
       body += '</ol>';
-      if (t.sources?.length) {
-        body += '<p class="tp-label">Sources</p><ul>';
-        t.sources.forEach(s => { body += `<li><a href="${esc(s.url)}">${esc(s.label)}</a> — ${esc(s.url)}</li>`; });
-        body += '</ul>';
-      }
     });
   });
 
   const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head><meta charset="utf-8"><title>Current Affairs Group</title>
 <style>
-  body { font-family: Calibri, sans-serif; font-size: 11pt; margin: 2cm; }
+  body { font-family: Calibri, sans-serif; font-size: 12pt; margin: 2cm; color: #000; }
   h1   { font-size: 20pt; color: #1e3a5f; text-align: center; margin-bottom: 4pt; }
   .date{ text-align: center; color: #718096; font-size: 10pt; margin-top: 0; }
   .rule{ border: none; border-top: 3pt solid #2b6cb0; margin: 12pt 0 18pt; }
   .cat-head   { font-size: 14pt; font-weight: bold; color: #1e3a5f; margin-top: 20pt; margin-bottom: 4pt; border-bottom: 1pt solid #e2e8f0; padding-bottom: 4pt; }
-  .topic-title{ font-size: 12pt; font-weight: bold; color: #1e3a5f; margin: 12pt 0 4pt; }
-  .topic-desc { font-style: italic; color: #4a5568; margin: 0 0 8pt; }
-  .tp-label   { font-weight: bold; text-decoration: underline; margin: 8pt 0 4pt; }
+  .topic-title{ font-size: 14pt; font-weight: bold; color: #1e3a5f; margin: 12pt 0 4pt; }
+  .topic-desc { font-size: 12pt; font-style: italic; color: #333; margin: 0 0 8pt; }
+  .tp-label   { font-size: 12pt; font-weight: bold; text-decoration: underline; margin: 8pt 0 4pt; }
   ol { margin: 0 0 8pt; padding-left: 18pt; }
-  li { margin-bottom: 4pt; }
+  li { font-size: 12pt; margin-bottom: 4pt; }
   .topic-rule { border: none; border-top: 1pt dashed #e2e8f0; margin: 12pt 0; }
   .footer     { text-align: center; color: #aaaaaa; font-size: 8pt; margin-top: 24pt; }
 </style></head>
